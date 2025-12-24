@@ -1,0 +1,92 @@
+:root {
+  --primary: #4361ee;
+  --secondary: #3f37c9;
+  --info: #4895ef;
+  --success: #4cc9f0;
+  --bg-soft: #f8f9fa;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: var(--bg-soft);
+  color: #333;
+}
+
+.text-gradient {
+  background: linear-gradient(45deg, var(--primary), var(--info));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.formation-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden;
+}
+
+.formation-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1) !important;
+}
+
+.hover-lift {
+  transition: transform 0.2s ease;
+}
+
+.hover-lift:hover {
+  transform: scale(1.02);
+}
+
+.bg-soft-primary {
+  background-color: rgba(67, 97, 238, 0.1);
+}
+
+.bg-soft-info {
+  background-color: rgba(72, 149, 239, 0.1);
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1 0 auto;
+}
+
+.rounded-pill {
+  border-radius: 50px !important;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.row>* {
+  animation: fadeIn 0.5s ease forwards;
+}
+
+/* Bootstrap Overrides */
+.btn-primary {
+  background-color: var(--primary);
+  border-color: var(--primary);
+}
+
+.btn-primary:hover {
+  background-color: var(--secondary);
+  border-color: var(--secondary);
+}
+
+.card {
+  border-radius: 15px;
+}
