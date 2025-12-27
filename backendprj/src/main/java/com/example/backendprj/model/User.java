@@ -5,46 +5,44 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
-@Table(name = "planifications")
+@Table(name = "users")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Planification {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "formation_id", nullable = false)
-    private Formation formation;
+    @Column(unique = true, nullable = false)
+    private String email;
 
-    @ManyToOne
-    @JoinColumn(name = "formateur_id")
-    private Formateur formateur;
+    @Column(nullable = false)
+    private String password;
 
-    @ManyToOne
-    @JoinColumn(name = "entreprise_id")
-    private Entreprise entreprise;
+    private String nom;
+    private String prenom;
+    private String telephone;
 
-    @Column(name = "date_debut")
-    private LocalDate dateDebut;
-
-    @Column(name = "date_fin")
-    private LocalDate dateFin;
-
-    private String type; // INDIVIDUEL, ENTREPRISE
-    private String remarques;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "user_roles",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<Role> roles = new HashSet<>();
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt = LocalDateTime.now();
-    
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();

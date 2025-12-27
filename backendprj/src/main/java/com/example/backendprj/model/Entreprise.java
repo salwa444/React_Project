@@ -5,46 +5,30 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "planifications")
+@Table(name = "entreprises")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Planification {
+public class Entreprise {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "formation_id", nullable = false)
-    private Formation formation;
-
-    @ManyToOne
-    @JoinColumn(name = "formateur_id")
-    private Formateur formateur;
-
-    @ManyToOne
-    @JoinColumn(name = "entreprise_id")
-    private Entreprise entreprise;
-
-    @Column(name = "date_debut")
-    private LocalDate dateDebut;
-
-    @Column(name = "date_fin")
-    private LocalDate dateFin;
-
-    private String type; // INDIVIDUEL, ENTREPRISE
-    private String remarques;
+    private String nom;
+    private String adresse;
+    private String telephone;
+    private String url;
+    private String email;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt = LocalDateTime.now();
-    
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
