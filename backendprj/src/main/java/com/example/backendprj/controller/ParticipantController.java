@@ -16,6 +16,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/participants")
+@CrossOrigin(origins = "http://localhost:5173")
 public class ParticipantController {
 
     @Autowired
@@ -26,6 +27,11 @@ public class ParticipantController {
 
     @Autowired
     private FormationRepository formationRepository;
+
+    @GetMapping
+    public List<Participant> getAllParticipants() {
+        return participantRepository.findAll();
+    }
 
     @PostMapping
     public ResponseEntity<?> registerParticipant(@RequestBody Map<String, Object> payload) {

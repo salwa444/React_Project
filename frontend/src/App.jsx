@@ -11,6 +11,10 @@ import AdminDashboard from './admin/AdminDashboard';
 import FormationManager from './admin/FormationManager';
 import FormateurManager from './admin/FormateurManager';
 import EntrepriseManager from './admin/EntrepriseManager';
+import PlanificationManager from './admin/PlanificationManager';
+import InscriptionManager from './admin/InscriptionManager';
+import EvaluationManager from './admin/EvaluationManager';
+import UserManager from './admin/UserManager';
 import './App.css';
 
 // Public Layout to keep Navbar/Footer on site pages but NOT on admin pages
@@ -46,10 +50,10 @@ function App() {
           <Route path="formations" element={<FormationManager />} />
           <Route path="formateurs" element={<FormateurManager />} />
           <Route path="entreprises" element={<EntrepriseManager />} />
-          <Route path="planning" element={<div>Planification (En cours...)</div>} />
-          <Route path="inscriptions" element={<div>Gestion des Inscriptions (En cours...)</div>} />
-          <Route path="evaluations" element={<div>Évaluations (En cours...)</div>} />
-          <Route path="utilisateurs" element={<div>Gestion des Utilisateurs (En cours...)</div>} />
+          <Route path="planning" element={<PlanificationManager />} />
+          <Route path="inscriptions" element={<InscriptionManager />} />
+          <Route path="evaluations" element={<EvaluationManager />} />
+          <Route path="utilisateurs" element={<UserManager />} />
         </Route>
       </Routes>
     </Router>
