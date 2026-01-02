@@ -15,7 +15,7 @@ const PlanificationManager = () => {
         entreprise: null,
         dateDebut: '',
         dateFin: '',
-        type: 'INTER',
+        type: 'ENTREPRISE',
         remarques: ''
     });
     const [isEditing, setIsEditing] = useState(false);
@@ -63,16 +63,44 @@ const PlanificationManager = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
+            // Create a payload matching PlanificationDTO
+            const payload = {
+                formationId: formData.formation?.id,
+                formateurId: formData.formateur?.id,
+                entrepriseId: formData.entreprise?.id,
+                dateDebut: formData.dateDebut,
+                dateFin: formData.dateFin,
+                type: formData.type,
+                remarques: formData.remarques || ''
+            };
+
             if (isEditing) {
-                await axiosInstance.put(`/planifications/${formData.id}`, formData);
+                await axiosInstance.put(`/planifications/${formData.id}`, payload);
             } else {
-                await axiosInstance.post('/planifications', formData);
+                await axiosInstance.post('/planifications', payload);
             }
             fetchPlanifications();
             resetForm();
         } catch (err) {
             console.error(err);
-            alert("Erreur lors de l'enregistrement");
+            const errorData = err.response?.data;
+            let errorMessage = "Erreur lors de l'enregistrement";
+
+            if (errorData) {
+                if (typeof errorData === 'string') {
+                    errorMessage = errorData;
+                } else if (errorData.message) {
+                    errorMessage = errorData.message;
+                } else if (errorData.error) {
+                    errorMessage = `Erreur: ${errorData.error}`;
+                } else {
+                    errorMessage = JSON.stringify(errorData);
+                }
+            } else if (err.message) {
+                errorMessage = err.message;
+            }
+
+            alert(errorMessage);
         }
     };
 
@@ -154,8 +182,7 @@ const PlanificationManager = () => {
                         <div className="col-md-3">
                             <label className="form-label">Type</label>
                             <select className="form-select" name="type" value={formData.type} onChange={handleChange}>
-                                <option value="INTER">Inter-entreprises</option>
-                                <option value="INTRA">Intra-entreprise</option>
+                                <option value="ENTREPRISE">Entreprise</option>
                                 <option value="INDIVIDUEL">Individuel</option>
                             </select>
                         </div>

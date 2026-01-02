@@ -1,29 +1,33 @@
 import React from 'react';
-import { Link, Outlet, useLocation } from 'react-router-dom';
-import './Admin.css';
+import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
+import '../admin/Admin.css'; // Reuse Admin styles
 
-const AdminLayout = () => {
+const AssistantLayout = () => {
+    const navigate = useNavigate();
     const location = useLocation();
 
-    // Menu updated to match "Premium" feel icons
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('role');
+        navigate('/login');
+    };
+
+    // Assistant-specific menu items
     const menuItems = [
-        { path: '/admin', label: 'Dashboard', icon: 'bi-grid-1x2-fill' },
-        { path: '/admin/formations', label: 'Formations', icon: 'bi-journal-album' },
-        { path: '/admin/formateurs', label: 'Formateurs', icon: 'bi-people-fill' },
-        { path: '/admin/entreprises', label: 'Entreprises', icon: 'bi-building-fill' },
-        { path: '/admin/planning', label: 'Planification', icon: 'bi-calendar-event-fill' },
-        { path: '/admin/inscriptions', label: 'Inscriptions', icon: 'bi-person-badge-fill' },
-        { path: '/admin/evaluations', label: 'Évaluations', icon: 'bi-star-fill' },
-        { path: '/admin/utilisateurs', label: 'Utilisateurs', icon: 'bi-gear-fill' },
+        { path: '/assistant', label: 'Dashboard', icon: 'bi-speedometer2' },
+        { path: '/assistant/entreprises', label: 'Entreprises', icon: 'bi-building' },
+        { path: '/assistant/planification', label: 'Planification', icon: 'bi-calendar-event' },
+        { path: '/assistant/inscriptions', label: 'Inscriptions', icon: 'bi-people' },
+        { path: '/assistant/evaluations', label: 'Évaluations', icon: 'bi-star' },
     ];
 
     return (
         <div className="admin-container">
-            {/* Left Sidebar (Blue) */}
+            {/* Sidebar */}
             <aside className="admin-sidebar">
-                <Link to="/" className="sidebar-logo">
-                    <i className="bi bi-mortarboard-fill me-2"></i>
-                    <span>AdminPanel</span>
+                <Link to="/assistant" className="sidebar-logo">
+                    <i className="bi bi-person-workspace me-2"></i>
+                    <span>AssistantPanel</span>
                 </Link>
 
                 <ul className="sidebar-menu">
@@ -31,7 +35,7 @@ const AdminLayout = () => {
                         <li className="menu-item" key={item.path}>
                             <Link
                                 to={item.path}
-                                className={`menu-link ${location.pathname === item.path ? 'active' : ''}`}
+                                className={`menu-link ${location.pathname === item.path || (item.path === '/assistant' && location.pathname === '/assistant/dashboard') ? 'active' : ''}`}
                             >
                                 <i className={`bi ${item.icon}`}></i>
                                 <span>{item.label}</span>
@@ -41,10 +45,10 @@ const AdminLayout = () => {
                 </ul>
 
                 <div className="mt-auto">
-                    <Link to="/login" className="menu-link text-white-50">
+                    <button onClick={handleLogout} className="menu-link text-white-50 bg-transparent border-0 w-100 text-start">
                         <i className="bi bi-box-arrow-left"></i>
                         <span>Déconnexion</span>
-                    </Link>
+                    </button>
                 </div>
             </aside>
 
@@ -62,18 +66,16 @@ const AdminLayout = () => {
                             <i className="bi bi-bell"></i>
                             <span className="badge-dot"></span>
                         </button>
-                        <button className="icon-btn">
-                            <i className="bi bi-gear"></i>
-                        </button>
                         <div className="d-flex align-items-center ms-2">
                             <img
-                                src={`https://ui-avatars.com/api/?name=${localStorage.getItem('username') || 'Admin'}&background=2563eb&color=fff`}
-                                alt="Admin"
+                                src={`https://ui-avatars.com/api/?name=${localStorage.getItem('username') || 'A U'}&background=10b981&color=fff`}
+                                alt="Assistant"
                                 className="avatar me-2"
+                                style={{ boxShadow: '0 0 0 2px #10b981' }} // Green for Assistant
                             />
                             <div className="d-none d-md-block">
-                                <div className="fw-bold text-dark small">{localStorage.getItem('username') || 'Admin'}</div>
-                                <div className="text-muted small" style={{ fontSize: '0.75rem' }}>Administrateur</div>
+                                <div className="fw-bold text-dark small">{localStorage.getItem('username') || 'Assistant'}</div>
+                                <div className="text-muted small" style={{ fontSize: '0.75rem' }}>Assistant</div>
                             </div>
                         </div>
                     </div>
@@ -86,4 +88,4 @@ const AdminLayout = () => {
     );
 };
 
-export default AdminLayout;
+export default AssistantLayout;

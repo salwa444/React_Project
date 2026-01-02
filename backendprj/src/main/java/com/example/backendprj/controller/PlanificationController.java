@@ -1,6 +1,10 @@
 package com.example.backendprj.controller;
 
+import com.example.backendprj.dto.PlanificationDTO;
 import com.example.backendprj.model.Planification;
+import com.example.backendprj.repository.EntrepriseRepository;
+import com.example.backendprj.repository.FormateurRepository;
+import com.example.backendprj.repository.FormationRepository;
 import com.example.backendprj.repository.PlanificationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,14 +20,24 @@ public class PlanificationController {
     @Autowired
     private PlanificationRepository planificationRepository;
 
+    @Autowired
+    private FormationRepository formationRepository;
+
+    @Autowired
+    private FormateurRepository formateurRepository;
+
+    @Autowired
+    private EntrepriseRepository entrepriseRepository;
+
     @GetMapping
     public List<Planification> getAllPlanifications() {
         return planificationRepository.findAll();
     }
 
     @PostMapping
-    public Planification createPlanification(@RequestBody Planification planification) {
-        return planificationRepository.save(planification);
+    public ResponseEntity<?> createPlanification(@RequestBody PlanificationDTO dto) {
+        Planification planification = new Planification();
+        return savePlanification(planification, dto);
     }
 
     @GetMapping("/{id}")
@@ -34,17 +48,34 @@ public class PlanificationController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Planification> updatePlanification(@PathVariable Long id, @RequestBody Planification details) {
+    public ResponseEntity<?> updatePlanification(@PathVariable Long id, @RequestBody PlanificationDTO dto) {
         return planificationRepository.findById(id).map(planification -> {
-            planification.setFormation(details.getFormation());
-            planification.setFormateur(details.getFormateur());
-            planification.setEntreprise(details.getEntreprise());
-            planification.setDateDebut(details.getDateDebut());
-            planification.setDateFin(details.getDateFin());
-            planification.setType(details.getType());
-            planification.setRemarques(details.getRemarques());
-            return ResponseEntity.ok(planificationRepository.save(planification));
+            return savePlanification(planification, dto);
         }).orElse(ResponseEntity.notFound().build());
+    }
+
+    private ResponseEntity<?> savePlanification(Planification planification, PlanificationDTO dto) {
+        if (dto.getFormationId() != null) {
+            formationRepository.findById(dto.getFormationId()).ifPresent(planification::setFormation);
+        }
+        if (dto.getFormateurId() != null) {
+            formateurRepository.findById(dto.getFormateurId()).ifPresent(planification::setFormateur);
+        }
+        if (dto.getEntrepriseId() != null) {
+            entrepriseRepository.findById(dto.getEntrepriseId()).ifPresent(planification::setEntreprise);
+        }
+
+        planification.setDateDebut(dto.getDateDebut());
+        planification.setDateFin(dto.getDateFin());
+        planification.setType(dto.getType());
+        planification.setRemarques(dto.getRemarques());
+
+        try {
+            Planification saved = planificationRepository.save(planification);
+            return ResponseEntity.ok(saved);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Erreur lors de l'enregistrement: " + e.getMessage());
+        }
     }
 
     @DeleteMapping("/{id}")

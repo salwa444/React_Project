@@ -1,121 +1,117 @@
 import React, { useState, useEffect } from 'react';
 import axiosInstance from '../api/axiosConfig';
 
-const EvaluationManager = () => {
+const EvaluationManager = ({ readOnly = false }) => {
     const [evaluations, setEvaluations] = useState([]);
     const [participants, setParticipants] = useState([]);
-
-    // Form state
+    const [isEditing, setIsEditing] = useState(false);
     const [formData, setFormData] = useState({
         id: null,
-        participant: null,
-        planification: null,
+        participant: { id: '' },
         notePedagogie: 5,
         noteRythme: 5,
         noteSupport: 5,
         noteMaitrise: 5,
         commentaire: ''
     });
-    const [isEditing, setIsEditing] = useState(false);
 
     useEffect(() => {
         fetchEvaluations();
-        fetchParticipants();
-    }, []);
+        if (!readOnly) {
+            fetchParticipants();
+        }
+    }, [readOnly]);
 
     const fetchEvaluations = async () => {
         try {
-            const res = await axiosInstance.get('/evaluations');
-            setEvaluations(res.data);
-        } catch (err) {
-            console.error(err);
+            const response = await axiosInstance.get('/evaluations');
+            setEvaluations(response.data || []);
+        } catch (error) {
+            console.error('Error fetching evaluations:', error);
+            setEvaluations([]);
         }
     };
 
     const fetchParticipants = async () => {
         try {
-            const res = await axiosInstance.get('/participants');
-            setParticipants(res.data);
-        } catch (err) {
-            console.error(err);
-        }
-    };
-
-    const handleParticipantChange = (e) => {
-        const id = e.target.value;
-        const participant = participants.find(p => p.id == id);
-        if (participant) {
-            setFormData({
-                ...formData,
-                participant: participant,
-                planification: participant.planification // Link directly to the participant's session
-            });
+            const response = await axiosInstance.get('/participants');
+            setParticipants(response.data || []);
+        } catch (error) {
+            console.error('Error fetching participants:', error);
         }
     };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
+        setFormData(prev => ({ ...prev, [name]: value }));
+    };
+
+    const handleParticipantChange = (e) => {
+        const participantId = e.target.value;
+        const participant = participants.find(p => p.id == participantId);
+        setFormData(prev => ({
+            ...prev,
+            participant: participant ? participant : { id: '' }
+        }));
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!formData.participant || !formData.planification) {
-            alert("Veuillez sélectionner un participant (qui doit être inscrit à une session).");
-            return;
-        }
-
         try {
             if (isEditing) {
-                await axiosInstance.put(`/evaluations/${formData.id}`, formData);
+                await axiosInstance.put(`/evaluations/${formData.id}`, {
+                    ...formData,
+                    planification: formData.participant.planification // Ensure link logic
+                });
             } else {
-                await axiosInstance.post('/evaluations', formData);
+                await axiosInstance.post('/evaluations', {
+                    ...formData,
+                    planification: formData.participant.planification
+                });
             }
             fetchEvaluations();
             resetForm();
-        } catch (err) {
-            console.error(err);
+        } catch (error) {
+            console.error('Error saving evaluation:', error);
             alert("Erreur lors de l'enregistrement");
         }
     };
 
-    const handleEdit = (evalData) => {
-        setFormData({
-            id: evalData.id,
-            participant: evalData.participant,
-            planification: evalData.planification,
-            notePedagogie: evalData.notePedagogie,
-            noteRythme: evalData.noteRythme,
-            noteSupport: evalData.noteSupport,
-            noteMaitrise: evalData.noteMaitrise,
-            commentaire: evalData.commentaire
-        });
-        setIsEditing(true);
-    };
-
     const handleDelete = async (id) => {
-        if (window.confirm('Confirmer la suppression ?')) {
+        if (window.confirm('Êtes-vous sûr de vouloir supprimer cette évaluation ?')) {
             try {
                 await axiosInstance.delete(`/evaluations/${id}`);
                 fetchEvaluations();
-            } catch (err) {
-                console.error(err);
+            } catch (error) {
+                console.error('Error deleting evaluation:', error);
             }
         }
     };
 
+    const handleEdit = (evaluation) => {
+        setIsEditing(true);
+        setFormData({
+            id: evaluation.id,
+            participant: evaluation.participant,
+            notePedagogie: evaluation.notePedagogie,
+            noteRythme: evaluation.noteRythme,
+            noteSupport: evaluation.noteSupport,
+            noteMaitrise: evaluation.noteMaitrise,
+            commentaire: evaluation.commentaire
+        });
+    };
+
     const resetForm = () => {
+        setIsEditing(false);
         setFormData({
             id: null,
-            participant: null,
-            planification: null,
+            participant: { id: '' },
             notePedagogie: 5,
             noteRythme: 5,
             noteSupport: 5,
             noteMaitrise: 5,
             commentaire: ''
         });
-        setIsEditing(false);
     };
 
     return (
@@ -123,49 +119,51 @@ const EvaluationManager = () => {
             <div className="card-body">
                 <h3 className="mb-4">Gestion des Évaluations</h3>
 
-                <form onSubmit={handleSubmit} className="mb-4 p-4 bg-light rounded">
-                    <div className="row g-3">
-                        <div className="col-md-12">
-                            <label className="form-label">Participant</label>
-                            <select className="form-select" onChange={handleParticipantChange} value={formData.participant?.id || ''} required disabled={isEditing}>
-                                <option value="">Choisir un participant...</option>
-                                {participants.map(p => (
-                                    <option key={p.id} value={p.id}>
-                                        {p.nom} {p.prenom} - {p.planification?.formation?.titre}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
+                {!readOnly && (
+                    <form onSubmit={handleSubmit} className="mb-4 p-4 bg-light rounded">
+                        <div className="row g-3">
+                            <div className="col-md-12">
+                                <label className="form-label">Participant</label>
+                                <select className="form-select" onChange={handleParticipantChange} value={formData.participant?.id || ''} required disabled={isEditing}>
+                                    <option value="">Choisir un participant...</option>
+                                    {participants.map(p => (
+                                        <option key={p.id} value={p.id}>
+                                            {p.nom} {p.prenom} - {p.planification?.formation?.titre}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
 
-                        <div className="col-md-3">
-                            <label className="form-label">Pédagogie (0-10)</label>
-                            <input type="number" min="0" max="10" className="form-control" name="notePedagogie" value={formData.notePedagogie} onChange={handleChange} required />
-                        </div>
-                        <div className="col-md-3">
-                            <label className="form-label">Rythme (0-10)</label>
-                            <input type="number" min="0" max="10" className="form-control" name="noteRythme" value={formData.noteRythme} onChange={handleChange} required />
-                        </div>
-                        <div className="col-md-3">
-                            <label className="form-label">Support (0-10)</label>
-                            <input type="number" min="0" max="10" className="form-control" name="noteSupport" value={formData.noteSupport} onChange={handleChange} required />
-                        </div>
-                        <div className="col-md-3">
-                            <label className="form-label">Maîtrise (0-10)</label>
-                            <input type="number" min="0" max="10" className="form-control" name="noteMaitrise" value={formData.noteMaitrise} onChange={handleChange} required />
-                        </div>
+                            <div className="col-md-3">
+                                <label className="form-label">Pédagogie (0-10)</label>
+                                <input type="number" min="0" max="10" className="form-control" name="notePedagogie" value={formData.notePedagogie} onChange={handleChange} required />
+                            </div>
+                            <div className="col-md-3">
+                                <label className="form-label">Rythme (0-10)</label>
+                                <input type="number" min="0" max="10" className="form-control" name="noteRythme" value={formData.noteRythme} onChange={handleChange} required />
+                            </div>
+                            <div className="col-md-3">
+                                <label className="form-label">Support (0-10)</label>
+                                <input type="number" min="0" max="10" className="form-control" name="noteSupport" value={formData.noteSupport} onChange={handleChange} required />
+                            </div>
+                            <div className="col-md-3">
+                                <label className="form-label">Maîtrise (0-10)</label>
+                                <input type="number" min="0" max="10" className="form-control" name="noteMaitrise" value={formData.noteMaitrise} onChange={handleChange} required />
+                            </div>
 
-                        <div className="col-md-12">
-                            <label className="form-label">Commentaire</label>
-                            <textarea className="form-control" name="commentaire" value={formData.commentaire} onChange={handleChange}></textarea>
+                            <div className="col-md-12">
+                                <label className="form-label">Commentaire</label>
+                                <textarea className="form-control" name="commentaire" value={formData.commentaire} onChange={handleChange}></textarea>
+                            </div>
                         </div>
-                    </div>
-                    <div className="mt-3">
-                        <button type="submit" className={`btn btn-${isEditing ? 'warning' : 'primary'} me-2`}>
-                            {isEditing ? 'Modifier' : 'Ajouter'}
-                        </button>
-                        {isEditing && <button type="button" className="btn btn-secondary" onClick={resetForm}>Annuler</button>}
-                    </div>
-                </form>
+                        <div className="mt-3">
+                            <button type="submit" className={`btn btn-${isEditing ? 'warning' : 'primary'} me-2`}>
+                                {isEditing ? 'Modifier' : 'Ajouter'}
+                            </button>
+                            {isEditing && <button type="button" className="btn btn-secondary" onClick={resetForm}>Annuler</button>}
+                        </div>
+                    </form>
+                )}
 
                 <div className="table-responsive">
                     <table className="table table-hover align-middle">
@@ -176,30 +174,54 @@ const EvaluationManager = () => {
                                 <th>Notes (P/R/S/M)</th>
                                 <th>Moyenne</th>
                                 <th>Commentaire</th>
-                                <th>Actions</th>
+                                {!readOnly && <th>Actions</th>}
                             </tr>
                         </thead>
                         <tbody>
-                            {evaluations.map(ev => {
-                                const avg = (ev.notePedagogie + ev.noteRythme + ev.noteSupport + ev.noteMaitrise) / 4;
+                            {Array.isArray(evaluations) && evaluations.map(ev => {
+                                if (!ev) return null; // Skip null entries
+
+                                // Safe calculation for average
+                                let avg = 0;
+                                try {
+                                    const p = Number(ev.notePedagogie) || 0;
+                                    const r = Number(ev.noteRythme) || 0;
+                                    const s = Number(ev.noteSupport) || 0;
+                                    const m = Number(ev.noteMaitrise) || 0;
+                                    avg = (p + r + s + m) / 4;
+                                } catch (e) {
+                                    console.error("Error calc avg", e);
+                                }
+
                                 return (
-                                    <tr key={ev.id}>
-                                        <td>{ev.participant?.nom} {ev.participant?.prenom}</td>
-                                        <td>{ev.planification?.formation?.titre}</td>
-                                        <td>{ev.notePedagogie}/{ev.noteRythme}/{ev.noteSupport}/{ev.noteMaitrise}</td>
-                                        <td><span className={`badge ${avg >= 5 ? 'bg-success' : 'bg-danger'}`}>{avg.toFixed(1)}/10</span></td>
-                                        <td className="text-truncate" style={{ maxWidth: '200px' }}>{ev.commentaire}</td>
+                                    <tr key={ev.id || Math.random()}>
+                                        <td>{ev.participant?.nom || '-'} {ev.participant?.prenom || ''}</td>
+                                        <td>{ev.planification?.formation?.titre || '-'}</td>
+                                        <td>{ev.notePedagogie || 0}/{ev.noteRythme || 0}/{ev.noteSupport || 0}/{ev.noteMaitrise || 0}</td>
                                         <td>
-                                            <button className="btn btn-sm btn-outline-warning me-2" onClick={() => handleEdit(ev)}>
-                                                <i className="bi bi-pencil"></i>
-                                            </button>
-                                            <button className="btn btn-sm btn-outline-danger" onClick={() => handleDelete(ev.id)}>
-                                                <i className="bi bi-trash"></i>
-                                            </button>
+                                            <span className={`badge ${avg >= 5 ? 'bg-success' : 'bg-danger'}`}>
+                                                {typeof avg === 'number' ? avg.toFixed(1) : '0.0'}/10
+                                            </span>
                                         </td>
+                                        <td className="text-truncate" style={{ maxWidth: '200px' }}>{ev.commentaire || '-'}</td>
+                                        {!readOnly && (
+                                            <td>
+                                                <button className="btn btn-sm btn-outline-warning me-2" onClick={() => handleEdit(ev)}>
+                                                    <i className="bi bi-pencil"></i>
+                                                </button>
+                                                <button className="btn btn-sm btn-outline-danger" onClick={() => handleDelete(ev.id)}>
+                                                    <i className="bi bi-trash"></i>
+                                                </button>
+                                            </td>
+                                        )}
                                     </tr>
                                 );
                             })}
+                            {(!Array.isArray(evaluations) || evaluations.length === 0) && (
+                                <tr>
+                                    <td colSpan={readOnly ? 5 : 6} className="text-center py-4 text-muted">Aucune évaluation trouvée.</td>
+                                </tr>
+                            )}
                         </tbody>
                     </table>
                 </div>

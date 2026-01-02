@@ -31,9 +31,11 @@ public class Planification {
     private Entreprise entreprise;
 
     @Column(name = "date_debut")
+    @com.fasterxml.jackson.annotation.JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateDebut;
 
     @Column(name = "date_fin")
+    @com.fasterxml.jackson.annotation.JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateFin;
 
     private String type; // INDIVIDUEL, ENTREPRISE

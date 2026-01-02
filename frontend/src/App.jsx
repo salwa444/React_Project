@@ -8,6 +8,8 @@ import TrainerForm from './pages/TrainerForm';
 import Login from './auth/Login';
 import AdminLayout from './admin/AdminLayout';
 import AdminDashboard from './admin/AdminDashboard';
+import AssistantLayout from './assistant/AssistantLayout';
+import AssistantDashboard from './assistant/AssistantDashboard';
 import FormationManager from './admin/FormationManager';
 import FormateurManager from './admin/FormateurManager';
 import EntrepriseManager from './admin/EntrepriseManager';
@@ -54,6 +56,15 @@ function App() {
           <Route path="inscriptions" element={<InscriptionManager />} />
           <Route path="evaluations" element={<EvaluationManager />} />
           <Route path="utilisateurs" element={<UserManager />} />
+        </Route>
+
+        {/* Assistant Routes */}
+        <Route path="/assistant" element={<AssistantLayout />}>
+          <Route index element={<AssistantDashboard />} />
+          <Route path="entreprises" element={<EntrepriseManager />} />
+          <Route path="planification" element={<PlanificationManager />} />
+          <Route path="inscriptions" element={<InscriptionManager />} />
+          <Route path="evaluations" element={<EvaluationManager readOnly={true} />} />
         </Route>
       </Routes>
     </Router>

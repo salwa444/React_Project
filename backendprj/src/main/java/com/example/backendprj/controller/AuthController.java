@@ -33,6 +33,8 @@ public class AuthController {
                 Map<String, Object> response = new HashMap<>();
                 response.put("message", "Connexion réussie");
                 response.put("email", user.getEmail());
+                response.put("nom", user.getNom());
+                response.put("prenom", user.getPrenom());
                 
                 // Extract role (take the first one or default to visitor)
                 String roleName = "visitor";

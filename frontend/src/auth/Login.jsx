@@ -24,18 +24,49 @@ const Login = () => {
         try {
             // Note: Endpoint is assumed based on standard patterns or could be /auth/login
             const response = await axiosInstance.post('/auth/login', formData);
-            const { role } = response.data;
+            const role = response.data?.role;
 
-            // Store token/role if needed (simplified for this task)
+            // Store token/role/username
             localStorage.setItem('role', role);
 
-            // Redirect based on role
-            if (role === 'admin') navigate('/admin');
-            else if (role === 'assistant') navigate('/assistant');
-            else navigate('/dashboard');
+            if (response.data.nom && response.data.prenom) {
+                localStorage.setItem('username', `${response.data.nom} ${response.data.prenom}`);
+            } else {
+                // Fallback: Extract name from email (e.g., "sara.bennani@..." -> "Sara Bennani")
+                const emailName = response.data.email.split('@')[0];
+                const formattedName = emailName
+                    .split(/[._-]/)
+                    .map(part => part.charAt(0).toUpperCase() + part.slice(1))
+                    .join(' ');
+                localStorage.setItem('username', formattedName);
+            }
+
+            console.log("Login successful, role:", role);
+
+            // Normalize role to handle any backend variations (admin, ADMIN, ROLE_ADMIN, etc.)
+            const normalizedRole = role ? role.toString().toUpperCase().replace('ROLE_', '').trim() : '';
+
+            if (normalizedRole === 'ADMIN') {
+                navigate('/admin');
+            } else if (normalizedRole === 'ASSISTANT') {
+                navigate('/assistant');
+            } else {
+                // Default fallback
+                navigate('/');
+            }
 
         } catch (err) {
-            setError("Email ou mot de passe incorrect.");
+            console.error("Login Error Full Details:", err);
+            if (err.response) {
+                console.error("Data:", err.response.data);
+                console.error("Status:", err.response.status);
+                console.error("Headers:", err.response.headers);
+            } else if (err.request) {
+                console.error("No response received:", err.request);
+            } else {
+                console.error("Error setting up request:", err.message);
+            }
+            setError("Erreur de connexion : " + (err.response?.data?.message || err.message));
         } finally {
             setLoading(false);
         }
