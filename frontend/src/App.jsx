@@ -11,6 +11,11 @@ import AdminDashboard from './admin/AdminDashboard';
 import AssistantLayout from './assistant/AssistantLayout';
 import AssistantDashboard from './assistant/AssistantDashboard';
 import FormationManager from './admin/FormationManager';
+import FormateurLayout from './formateur/FormateurLayout';
+import MesFormations from './formateur/MesFormations';
+import Calendrier from './formateur/Calendrier';
+import Evaluations from './formateur/Evaluations';
+import Profil from './formateur/Profil';
 import FormateurManager from './admin/FormateurManager';
 import EntrepriseManager from './admin/EntrepriseManager';
 import PlanificationManager from './admin/PlanificationManager';
@@ -65,6 +70,14 @@ function App() {
           <Route path="planification" element={<PlanificationManager />} />
           <Route path="inscriptions" element={<InscriptionManager />} />
           <Route path="evaluations" element={<EvaluationManager readOnly={true} />} />
+        </Route>
+
+        {/* Formateur Routes */}
+        <Route path="/formateur" element={<FormateurLayout />}>
+          <Route index element={<Profil />} />
+          <Route path="formations" element={<MesFormations />} />
+          <Route path="calendrier" element={<Calendrier />} />
+          <Route path="evaluations" element={<Evaluations />} />
         </Route>
       </Routes>
     </Router>

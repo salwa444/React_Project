@@ -27,7 +27,13 @@ const Login = () => {
             const role = response.data?.role;
 
             // Store token/role/username
+            if (response.data.token) {
+                localStorage.setItem('token', response.data.token);
+                // Set default header immediately for subsequent requests in this session if not reloading
+                axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
+            }
             localStorage.setItem('role', role);
+            localStorage.setItem('userEmail', response.data.email);
 
             if (response.data.nom && response.data.prenom) {
                 localStorage.setItem('username', `${response.data.nom} ${response.data.prenom}`);
@@ -50,6 +56,8 @@ const Login = () => {
                 navigate('/admin');
             } else if (normalizedRole === 'ASSISTANT') {
                 navigate('/assistant');
+            } else if (normalizedRole === 'FORMATEUR') {
+                navigate('/formateur');
             } else {
                 // Default fallback
                 navigate('/');

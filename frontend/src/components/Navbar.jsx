@@ -21,11 +21,7 @@ const Navbar = () => {
                 </button>
                 <div className="collapse navbar-collapse" id="navbarNav">
                     <ul className="navbar-nav ms-auto align-items-center">
-                        <li className="nav-item">
-                            <Link className="btn btn-outline-light me-2 mb-2 mb-lg-0 rounded-pill px-4" to="/inscription/0">
-                                S'inscrire comme participant
-                            </Link>
-                        </li>
+
                         <li className="nav-item">
                             <Link className="btn btn-outline-info me-2 mb-2 mb-lg-0 rounded-pill px-4" to="/register-formateur">
                                 S'inscrire comme formateur

@@ -9,6 +9,8 @@ const AssistantLayout = () => {
     const handleLogout = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('role');
+        localStorage.removeItem('userEmail');
+        localStorage.removeItem('username');
         navigate('/login');
     };
 

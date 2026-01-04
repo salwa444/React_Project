@@ -66,10 +66,7 @@ const InscriptionManager = () => {
                                             {participant.planification?.dateDebut}
                                         </span>
                                     </td>
-                                    <td>
-                                        {/* Assuming there might be a createdAt or just reusing logic */}
-                                        -
-                                    </td>
+                                    <td>{participant.createdAt ? new Date(participant.createdAt).toLocaleDateString() : '-'}</td>
                                 </tr>
                             ))}
                             {filteredParticipants.length === 0 && (

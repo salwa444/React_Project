@@ -1,9 +1,10 @@
 import React from 'react';
-import { Link, Outlet, useLocation } from 'react-router-dom';
+import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import './Admin.css';
 
 const AdminLayout = () => {
     const location = useLocation();
+    const navigate = useNavigate();
 
     // Menu updated to match "Premium" feel icons
     const menuItems = [
@@ -16,6 +17,11 @@ const AdminLayout = () => {
         { path: '/admin/evaluations', label: 'Évaluations', icon: 'bi-star-fill' },
         { path: '/admin/utilisateurs', label: 'Utilisateurs', icon: 'bi-gear-fill' },
     ];
+
+    const handleLogout = () => {
+        localStorage.clear();
+        navigate('/login');
+    };
 
     return (
         <div className="admin-container">
@@ -41,10 +47,10 @@ const AdminLayout = () => {
                 </ul>
 
                 <div className="mt-auto">
-                    <Link to="/login" className="menu-link text-white-50">
+                    <button onClick={handleLogout} className="menu-link text-white-50 bg-transparent border-0 w-100 text-start">
                         <i className="bi bi-box-arrow-left"></i>
                         <span>Déconnexion</span>
-                    </Link>
+                    </button>
                 </div>
             </aside>
 
