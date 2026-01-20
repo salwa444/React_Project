@@ -1,69 +1,41 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
 
-:root {
-    --primary-blue: #2563eb;
-    /* Royal Blue */
-    --primary-dark: #1e40af;
-    --sidebar-bg: #2563eb;
-    --sidebar-text: #ffffff;
-    --sidebar-text-muted: rgba(255, 255, 255, 0.7);
-
-    --bg-page: #f3f4f6;
-    /* Light Gray Background */
-    --card-bg: #ffffff;
-
-    --text-primary: #111827;
-    --text-secondary: #6b7280;
-
-    --success: #10b981;
-    --warning: #f59e0b;
-    --danger: #ef4444;
-
-    --radius-lg: 16px;
-    /* Larger radius for modern look */
-    --radius-md: 10px;
-
-    --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-    --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
-}
-
-body {
-    font-family: 'Inter', sans-serif;
-    background-color: var(--bg-page);
-    color: var(--text-primary);
-    margin: 0;
-}
-
-/* --- Layout Flexbox --- */
+/* --- Global Layout --- */
 .admin-container {
     display: flex;
     min-height: 100vh;
+    font-family: 'Outfit', sans-serif;
 }
 
 /* --- Sidebar --- */
 .admin-sidebar {
-    width: 260px;
-    background-color: var(--sidebar-bg);
-    color: var(--sidebar-text);
+    width: var(--sidebar-width);
+    background: transparent;
     display: flex;
     flex-direction: column;
-    padding: 1.5rem;
+    padding: 3rem 1.5rem;
     position: fixed;
     height: 100vh;
     left: 0;
     top: 0;
     z-index: 1000;
-    box-shadow: 4px 0 15px rgba(37, 99, 235, 0.2);
 }
 
 .sidebar-logo {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
     font-weight: 700;
-    margin-bottom: 2.5rem;
+    margin-bottom: 4rem;
     display: flex;
     align-items: center;
-    color: white;
+    color: var(--text-primary);
     text-decoration: none;
+    gap: 12px;
+    padding-left: 1rem;
+}
+
+.sidebar-logo i {
+    color: var(--primary);
+    font-size: 1.4rem;
 }
 
 .sidebar-menu {
@@ -80,44 +52,45 @@ body {
 .menu-link {
     display: flex;
     align-items: center;
-    padding: 0.875rem 1rem;
-    color: var(--sidebar-text-muted);
+    padding: 12px 20px;
+    color: #6e7090;
+    /* Specific muted purple-gray */
     text-decoration: none;
-    border-radius: var(--radius-md);
-    transition: all 0.2s ease;
+    border-radius: 12px;
+    transition: all 0.3s ease;
     font-weight: 500;
+    font-size: 0.95rem;
+    position: relative;
 }
 
 .menu-link:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-    color: white;
+    color: var(--text-primary);
 }
 
 .menu-link.active {
-    background-color: rgba(255, 255, 255, 0.15);
-    color: white;
-    font-weight: 600;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    color: var(--text-primary);
+    /* Dubank style: Text highlight + faint gradient + left border marker */
+    background: linear-gradient(90deg, rgba(214, 67, 116, 0.1) 0%, rgba(0, 0, 0, 0) 100%);
+    border-left: 3px solid var(--primary);
+    border-radius: 0 12px 12px 0;
 }
 
 .menu-link i {
-    font-size: 1.25rem;
-    margin-right: 1rem;
-    width: 24px;
+    font-size: 1.2rem;
+    margin-right: 1.2rem;
+    width: 20px;
     text-align: center;
 }
 
-/* --- Main Content Area --- */
+/* --- Main Area --- */
 .admin-main {
     flex-grow: 1;
-    margin-left: 260px;
-    /* Width of sidebar */
-    padding: 2rem 3rem;
-    background-color: var(--bg-page);
-    min-height: 100vh;
+    margin-left: var(--sidebar-width);
+    padding: 2.5rem 3.5rem;
+    color: var(--text-primary);
 }
 
-/* --- Header / Topbar --- */
+/* --- Header --- */
 .topbar {
     display: flex;
     justify-content: space-between;
@@ -125,176 +98,338 @@ body {
     margin-bottom: 2.5rem;
 }
 
-.search-bar {
+.welcome-text {
+    font-size: 1.8rem;
+    font-weight: 400;
+}
+
+.welcome-text span {
+    font-weight: 700;
+}
+
+.topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.search-wrapper {
     position: relative;
-    width: 400px;
+    width: 280px;
 }
 
 .search-input {
     width: 100%;
-    padding: 0.75rem 1rem 0.75rem 2.5rem;
+    background: #1e1e36;
     border: none;
-    border-radius: var(--radius-lg);
-    background-color: white;
-    box-shadow: var(--shadow-card);
-    font-size: 0.875rem;
-    color: var(--text-primary);
+    border-radius: 15px;
+    padding: 12px 20px 12px 45px;
+    color: white;
+    font-family: 'Outfit', sans-serif;
+}
+
+.search-input::placeholder {
+    color: #5a5a7a;
+}
+
+.search-input:focus {
+    outline: 1px solid var(--primary);
 }
 
 .search-icon {
     position: absolute;
-    left: 1rem;
+    left: 15px;
     top: 50%;
     transform: translateY(-50%);
-    color: var(--text-secondary);
+    color: #5a5a7a;
+}
+
+.icon-btn {
+    width: 45px;
+    height: 45px;
+    border-radius: 15px;
+    background: #1e1e36;
+    border: none;
+    color: #5a5a7a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.2rem;
+    position: relative;
+}
+
+.icon-btn:hover {
+    color: white;
 }
 
 .user-profile {
     display: flex;
     align-items: center;
-    gap: 1rem;
-}
-
-.icon-btn {
-    background: white;
-    border: none;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--text-secondary);
-    box-shadow: var(--shadow-card);
-    cursor: pointer;
-    position: relative;
-}
-
-.badge-dot {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 10px;
-    height: 10px;
-    background-color: var(--danger);
-    border-radius: 50%;
-    border: 2px solid white;
+    gap: 1.5rem;
 }
 
 .avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    border-radius: 12px;
     object-fit: cover;
-    border: 2px solid white;
-    box-shadow: 0 0 0 2px var(--primary-blue);
 }
 
-/* --- Dashboard Widgets --- */
-.section-title {
-    font-size: 1.5rem;
+/* --- Dashboard Grid --- */
+
+/* Dubank Cards */
+.dubank-card {
+    background: var(--card-bg);
+    border-radius: var(--card-radius);
+    padding: 1.5rem;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--card-shadow);
+}
+
+.card-title {
+    color: #8b8b9d;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.card-value {
+    font-size: 1.6rem;
     font-weight: 700;
-    color: var(--text-primary);
-    margin-bottom: 1.5rem;
+    color: white;
+    margin-bottom: 0.5rem;
 }
 
-/* KPI Cards */
+.card-trend {
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.trend-up {
+    color: var(--success);
+}
+
+.trend-down {
+    color: var(--danger);
+}
+
+/* Row 1 cards special styling */
 .kpi-row {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 1.5rem;
     margin-bottom: 2rem;
 }
 
-.kpi-card-white {
-    background: white;
-    border-radius: var(--radius-lg);
-    padding: 1.5rem;
-    box-shadow: var(--shadow-card);
-    transition: transform 0.2s;
-    position: relative;
-    overflow: hidden;
-}
-
-.kpi-card-white:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--shadow-hover);
-}
-
-.kpi-label-sm {
-    font-size: 0.875rem;
-    color: var(--text-secondary);
-    font-weight: 500;
-    margin-bottom: 0.5rem;
-}
-
-.kpi-value-lg {
-    font-size: 1.75rem;
-    font-weight: 700;
-    color: var(--text-primary);
-    margin-bottom: 0.5rem;
-}
-
-.kpi-progress {
-    height: 6px;
-    background-color: #e5e7eb;
-    border-radius: 3px;
-    margin-top: 1rem;
-    overflow: hidden;
-}
-
-.progress-bar {
-    height: 100%;
-    border-radius: 3px;
-}
-
-/* Charts */
-.chart-row {
+/* Row 2: Main Chart + Transactions */
+.dashboard-grid-row2 {
     display: grid;
     grid-template-columns: 2fr 1fr;
     gap: 1.5rem;
     margin-bottom: 2rem;
 }
 
-.chart-card-white {
-    background: white;
-    border-radius: var(--radius-lg);
-    padding: 1.5rem;
-    box-shadow: var(--shadow-card);
-    height: 100%;
-}
-
-.chart-header-row {
+/* Transaction List */
+.trans-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 1.2rem;
+}
+
+.trans-icon-box {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: #2a2a4a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    margin-right: 15px;
+    font-size: 1rem;
+}
+
+.trans-details {
+    flex-grow: 1;
+}
+
+.trans-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #fff;
+}
+
+.trans-sub {
+    font-size: 0.75rem;
+    color: #6e7090;
+}
+
+.trans-amount {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #fff;
+}
+
+/* Main Chart special */
+.chart-header {
+    display: flex;
+    justify-content: space-between;
     margin-bottom: 1.5rem;
 }
 
-.chart-title-md {
-    font-size: 1.125rem;
-    font-weight: 600;
-    color: var(--text-primary);
+/* Row 3: Investment + Bar Chart */
+.dashboard-grid-row3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
 }
 
-/* Tables */
-.table-container {
-    background: white;
-    border-radius: var(--radius-lg);
-    padding: 1.5rem;
-    box-shadow: var(--shadow-card);
-}
-
-.table thead th {
-    background-color: #f9fafb;
-    color: var(--text-secondary);
-    font-weight: 600;
-    border-bottom: 1px solid #e5e7eb;
+/* Investment items */
+.invest-item {
+    display: flex;
+    align-items: center;
+    background: #2a2a4a;
     padding: 1rem;
+    border-radius: 15px;
+    margin-bottom: 1rem;
 }
 
-.table tbody td {
-    padding: 1rem;
+.invest-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(224, 68, 129, 0.2);
+    color: #e04481;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+}
+
+.invest-info h4 {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #fff;
+}
+
+.invest-info p {
+    margin: 0;
+    font-size: 0.75rem;
+    color: #8b8b9d;
+}
+
+.invest-value {
+    margin-left: auto;
+    text-align: right;
+}
+
+.invest-value h4 {
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+.invest-value p {
+    margin: 0;
+    font-size: 0.75rem;
+    color: #8b8b9d;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #2a2a4a;
+    border-radius: 3px;
+}
+
+/* Table Overrides for Dubank Theme */
+.dubank-card .table {
+    margin-bottom: 0;
     color: var(--text-primary);
-    border-bottom: 1px solid #f3f4f6;
+    border-color: #2a2a4a;
+}
+
+.dubank-card .table th {
+    background-color: transparent !important;
+    /* Override bootstrap */
+    color: #8f95b2;
+    /* Muted header text */
+    border-bottom: 1px solid #2a2a4a;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    padding: 1rem;
+    letter-spacing: 0.5px;
+}
+
+.dubank-card .table td {
+    background-color: transparent !important;
+    border-bottom: 1px solid #2a2a4a;
+    padding: 1rem;
+    vertical-align: middle;
+    color: #fff;
+    font-size: 0.9rem;
+}
+
+/* Hover effect */
+.dubank-card .table-hover tbody tr:hover td {
+    background-color: rgba(255, 255, 255, 0.03) !important;
+    color: #fff;
+}
+
+/* Remove Bootstrap light table stripes if present */
+.table-striped>tbody>tr:nth-of-type(odd)>* {
+    color: inherit;
+    box-shadow: none;
+}
+
+/* Modal Dark Theme Overrides */
+.modal-content {
+    background-color: #1e1e36;
+    color: #fff;
+    border: 1px solid #2a2a4a;
+}
+
+.modal-header {
+    border-bottom: 1px solid #2a2a4a;
+}
+
+.modal-footer {
+    border-top: 1px solid #2a2a4a;
+}
+
+.btn-close-white {
+    filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+.form-control,
+.form-select {
+    background-color: #13132b;
+    border: 1px solid #2a2a4a;
+    color: #fff;
+    border-radius: 8px;
+}
+
+.form-control:focus,
+.form-select:focus {
+    background-color: #13132b;
+    border-color: var(--primary);
+    color: #fff;
+    box-shadow: 0 0 0 0.25rem rgba(214, 67, 116, 0.25);
+}
+
+.form-label {
+    color: #8f95b2;
+    font-size: 0.9rem;
 }

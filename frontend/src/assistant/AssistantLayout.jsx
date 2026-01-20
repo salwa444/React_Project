@@ -14,6 +14,8 @@ const AssistantLayout = () => {
         navigate('/login');
     };
 
+    const [searchTerm, setSearchTerm] = React.useState(''); // Global search state
+
     // Assistant-specific menu items
     const menuItems = [
         { path: '/assistant', label: 'Dashboard', icon: 'bi-speedometer2' },
@@ -58,9 +60,15 @@ const AssistantLayout = () => {
             <main className="admin-main">
                 {/* Topbar */}
                 <header className="topbar">
-                    <div className="search-bar">
-                        <i className="bi bi-search search-icon"></i>
-                        <input type="text" className="search-input" placeholder="Rechercher..." />
+                    <div className="search-wrapper">
+                        <input
+                            type="text"
+                            className="search-input"
+                            placeholder="Rechercher..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            style={{ paddingLeft: '20px' }}
+                        />
                     </div>
 
                     <div className="user-profile">
@@ -76,7 +84,7 @@ const AssistantLayout = () => {
                                 style={{ boxShadow: '0 0 0 2px #10b981' }} // Green for Assistant
                             />
                             <div className="d-none d-md-block">
-                                <div className="fw-bold text-dark small">{localStorage.getItem('username') || 'Assistant'}</div>
+                                <div className="fw-bold text-white small">{localStorage.getItem('username') || 'Assistant'}</div>
                                 <div className="text-muted small" style={{ fontSize: '0.75rem' }}>Assistant</div>
                             </div>
                         </div>
@@ -84,7 +92,7 @@ const AssistantLayout = () => {
                 </header>
 
                 {/* Page Content */}
-                <Outlet />
+                <Outlet context={{ searchTerm }} />
             </main>
         </div>
     );

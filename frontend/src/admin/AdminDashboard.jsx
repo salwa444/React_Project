@@ -12,7 +12,7 @@ import {
     ArcElement,
     Filler
 } from 'chart.js';
-import { Line, Doughnut } from 'react-chartjs-2';
+import { Line } from 'react-chartjs-2';
 
 ChartJS.register(
     CategoryScale,
@@ -49,62 +49,66 @@ const AdminDashboard = () => {
         fetchStats();
     }, []);
 
-    // Main Chart: Cashflow style (Blue Area)
+    // Dubank Style Charts
+    // Main Chart: Spending/Traffic - Neon Pink Line with Area
     const lineChartData = {
-        labels: ['Jan', 'Féb', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août'],
+        labels: ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'],
         datasets: [
             {
-                label: 'Revenus',
-                data: [12000, 19000, 15000, 25000, 22000, 30000, 28000, 35000],
+                label: 'Spending Summary',
+                data: [38, 48, 40, 50, 60, 48, 55],
                 fill: true,
                 backgroundColor: (context) => {
                     const ctx = context.chart.ctx;
                     const gradient = ctx.createLinearGradient(0, 0, 0, 300);
-                    gradient.addColorStop(0, 'rgba(37, 99, 235, 0.4)'); // Blue
-                    gradient.addColorStop(1, 'rgba(37, 99, 235, 0.0)');
+                    gradient.addColorStop(0, 'rgba(214, 67, 116, 0.2)'); // Pink
+                    gradient.addColorStop(1, 'rgba(214, 67, 116, 0)');
                     return gradient;
                 },
-                borderColor: '#2563eb',
+                borderColor: '#d64374',
                 tension: 0.4,
                 pointRadius: 0,
-                pointHoverRadius: 6,
-                borderWidth: 2,
+                borderWidth: 3,
             },
-        ],
-    };
-
-    // Secondary Chart: Doughnut style
-    const doughnutData = {
-        labels: ['Salaires', 'Logiciels', 'Remboursements', 'Pub'],
-        datasets: [
             {
-                data: [45, 25, 15, 15],
-                backgroundColor: ['#2563eb', '#60a5fa', '#93c5fd', '#bfdbfe'], // Blue shades
-                borderWidth: 0,
-            },
+                label: 'Previous Week',
+                data: [30, 40, 35, 45, 50, 40, 45],
+                fill: true,
+                backgroundColor: 'transparent',
+                borderColor: '#6e6ce6', // Purple
+                tension: 0.4,
+                pointRadius: 0,
+                borderWidth: 2,
+                borderDash: [5, 5]
+            }
         ],
     };
 
     const chartOptions = {
         responsive: true,
+        maintainAspectRatio: false,
         plugins: {
             legend: { display: false },
             tooltip: {
-                backgroundColor: '#1f2937',
-                padding: 12,
-                cornerRadius: 8,
+                backgroundColor: '#17163b',
+                titleColor: '#fff',
+                bodyColor: '#fff',
+                padding: 10,
+                displayColors: false,
+                borderColor: 'rgba(255,255,255,0.1)',
+                borderWidth: 1,
             }
         },
         scales: {
             y: {
-                grid: { color: '#f3f4f6', borderDash: [4, 4] },
+                grid: { color: 'rgba(255, 255, 255, 0.05)', borderDash: [4, 4] },
                 border: { display: false },
-                ticks: { color: '#9ca3af' }
+                ticks: { color: '#8f95b2' }
             },
             x: {
                 grid: { display: false },
                 border: { display: false },
-                ticks: { color: '#9ca3af' }
+                ticks: { color: '#8f95b2' }
             }
         },
         interaction: { mode: 'index', intersect: false },
@@ -112,118 +116,133 @@ const AdminDashboard = () => {
 
     if (loading) return <div></div>;
 
-    const kpiData = [
-        { label: 'Formations Actives', value: stats.formations, color: '#2563eb', percent: 75 },
-        { label: 'Participants', value: stats.participants, color: '#10b981', percent: 45 },
-        { label: 'Formateurs', value: stats.formateurs, color: '#f59e0b', percent: 60 },
-        { label: 'Entreprises', value: stats.entreprises, color: '#ef4444', percent: 30 },
-    ];
-
     return (
         <div>
-            <h2 className="section-title">Dashboard</h2>
-
-            {/* Row 1: KPI Cards */}
-            <div className="kpi-row">
-                {kpiData.map((kpi, idx) => (
-                    <div className="kpi-card-white" key={idx}>
-                        <div className="d-flex justify-content-between align-items-start">
-                            <div>
-                                <div className="kpi-label-sm text-uppercase">{kpi.label}</div>
-                                <div className="kpi-value-lg">{kpi.value}</div>
-                            </div>
-                            <span className="badge rounded-pill bg-light text-dark">+12%</span>
-                        </div>
-                        <div className="kpi-progress">
-                            <div
-                                className="progress-bar"
-                                style={{ width: `${kpi.percent}%`, backgroundColor: kpi.color }}
-                            ></div>
-                        </div>
-                        <div className="mt-2 small text-muted">Mise à jour: Hier</div>
-                    </div>
-                ))}
+            <div className="d-flex justify-content-between align-items-center mb-4">
+                <div className="welcome-text">Bonjour {localStorage.getItem('username')?.split(' ')[0] || 'Admin'} ! <span>Ravi de vous revoir !</span></div>
             </div>
 
-            {/* Row 2: Charts */}
-            <div className="chart-row">
-                <div className="chart-card-white">
-                    <div className="chart-header-row">
-                        <h3 className="chart-title-md">Flux de Trésorerie</h3>
-                        <div className="dropdown">
-                            <button className="btn btn-sm btn-light text-muted dropdown-toggle" type="button">
-                                Cette année
-                            </button>
-                        </div>
+            {/* Row 1: 3 Cards (Balance style) */}
+            <div className="kpi-row">
+                <div className="dubank-card">
+                    <div className="card-title">Composants Total</div>
+                    <div className="card-value">{stats.formations}</div>
+                    <div className="card-trend trend-up">
+                        <i className="bi bi-journal-album"></i>
+                        <span>Formations actives</span>
                     </div>
-                    <div style={{ height: '300px' }}>
+                </div>
+
+                <div className="dubank-card">
+                    <div className="card-title">Inscrits</div>
+                    <div className="card-value">{stats.participants}</div>
+                    <div className="card-trend trend-up">
+                        <i className="bi bi-people-fill"></i>
+                        <span>Participants totaux</span>
+                    </div>
+                </div>
+
+                <div className="dubank-card">
+                    <div className="card-title">Partenaires</div>
+                    <div className="card-value">{stats.entreprises}</div>
+                    <div className="card-trend trend-up">
+                        <i className="bi bi-building"></i>
+                        <span>Entreprises</span>
+                    </div>
+                </div>
+            </div>
+
+            {/* Row 2: Chart + Transactions */}
+            <div className="dashboard-grid-row2">
+                {/* Main Linear Chart */}
+                <div className="dubank-card">
+                    <div className="chart-header">
+                        <div className="card-title" style={{ marginBottom: 0 }}>Résumé des inscriptions</div>
+                        <div className="text-muted small">Cette semaine <i className="bi bi-chevron-down"></i></div>
+                    </div>
+                    <div style={{ height: '240px' }}>
                         <Line options={chartOptions} data={lineChartData} />
                     </div>
                 </div>
 
-                <div className="chart-card-white">
-                    <div className="chart-header-row">
-                        <h3 className="chart-title-md">Dépenses</h3>
-                        <button className="btn btn-sm btn-light p-1 rounded-circle">
-                            <i className="bi bi-three-dots"></i>
-                        </button>
+                {/* Recent Transactions List */}
+                <div className="dubank-card">
+                    <div className="chart-header">
+                        <div className="card-title" style={{ marginBottom: 0 }}>Activités Récentes</div>
                     </div>
-                    <div className="position-relative d-flex justify-content-center align-items-center" style={{ height: '250px' }}>
-                        <Doughnut
-                            data={doughnutData}
-                            options={{ cutout: '70%', plugins: { legend: { display: false } } }}
-                        />
-                        <div className="position-absolute text-center">
-                            <div className="h4 fw-bold mb-0">85%</div>
-                            <div className="small text-muted">Budget</div>
-                        </div>
-                    </div>
-                    <div className="mt-4">
-                        <div className="d-flex justify-content-between small mb-2">
-                            <span className="d-flex align-items-center"><span className="badge-dot bg-primary me-2" style={{ width: 8, height: 8 }}></span>Salaires</span>
-                            <span className="fw-bold">45%</span>
-                        </div>
-                        <div className="d-flex justify-content-between small">
-                            <span className="d-flex align-items-center"><span className="badge-dot bg-info me-2" style={{ width: 8, height: 8 }}></span>Logiciels</span>
-                            <span className="fw-bold">25%</span>
-                        </div>
+                    <div>
+                        {[1, 2, 3, 4].map(i => (
+                            <div className="trans-item" key={i}>
+                                <div className="d-flex align-items-center">
+                                    <div className="trans-icon-box">
+                                        <i className={`bi ${i % 2 === 0 ? 'bi-person-plus-fill' : 'bi-calendar-check-fill'}`}></i>
+                                    </div>
+                                    <div>
+                                        <div className="trans-title">{i % 2 === 0 ? 'Nouvelle Inscription' : 'Session Planifiée'}</div>
+                                        <div className="trans-sub">Aujourd'hui 10:{30 + i}</div>
+                                    </div>
+                                </div>
+                                <div className="trans-amount" style={{ color: '#00d09c' }}>
+                                    Succès
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 </div>
             </div>
 
-            {/* Row 3: Recent Activity / Table placeholder */}
-            <div className="table-container">
-                <div className="chart-header-row">
-                    <h3 className="chart-title-md">Dernières Inscriptions</h3>
-                    <button className="btn btn-primary btn-sm rounded-pill px-3">Voir tout</button>
+            {/* Row 3: Investment + Bar Chart (Simulation) */}
+            <div className="dashboard-grid-row3">
+                <div className="dubank-card">
+                    <div className="chart-header">
+                        <div className="card-title" style={{ marginBottom: 0 }}>Formateurs Top</div>
+                        <div className="text-muted small">Ce mois <i className="bi bi-chevron-down"></i></div>
+                    </div>
+                    <div>
+                        <div className="invest-item">
+                            <div className="invest-icon"><i className="bi bi-person-circle"></i></div>
+                            <div className="invest-info">
+                                <h4>Ahmed Alami</h4>
+                                <p>Expert Java</p>
+                            </div>
+                            <div className="invest-value">
+                                <h4>4.9/5</h4>
+                                <p>Note moy.</p>
+                            </div>
+                        </div>
+                        <div className="invest-item">
+                            <div className="invest-icon" style={{ background: 'rgba(255, 183, 77, 0.2)', color: '#ffb74d' }}><i className="bi bi-person-circle"></i></div>
+                            <div className="invest-info">
+                                <h4>Sarah Benoit</h4>
+                                <p>Expert React</p>
+                            </div>
+                            <div className="invest-value">
+                                <h4>4.8/5</h4>
+                                <p>Note moy.</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <table className="table table-hover mb-0">
-                    <thead>
-                        <tr>
-                            <th>Nom</th>
-                            <th>Formation</th>
-                            <th>Date</th>
-                            <th>Statut</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {[1, 2, 3].map(i => (
-                            <tr key={i}>
-                                <td>
-                                    <div className="d-flex align-items-center">
-                                        <div className="bg-light rounded-circle me-3 d-flex align-items-center justify-content-center" style={{ width: 32, height: 32 }}>
-                                            <i className="bi bi-person text-secondary"></i>
-                                        </div>
-                                        <span className="fw-500">Utilisateur Demo {i}</span>
-                                    </div>
-                                </td>
-                                <td className="text-muted">Formation React Avancé</td>
-                                <td className="text-muted">29 Dec 2025</td>
-                                <td><span className="badge bg-success bg-opacity-10 text-success rounded-pill px-3">Confirmé</span></td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+
+                <div className="dubank-card">
+                    <div className="chart-header">
+                        <div className="card-title" style={{ marginBottom: 0 }}>Vues par page</div>
+                        <div className="text-muted small">Derniers jours <i className="bi bi-chevron-down"></i></div>
+                    </div>
+                    <div style={{ height: '180px' }}>
+                        {/* Placeholder for bar chart - reusing Line for now but configured like a bar visually if we had Bar component imported */}
+                        <div className="d-flex align-items-end justify-content-between h-100 px-2 pb-2">
+                            {[40, 60, 30, 70, 50, 80, 45, 60, 75].map((h, idx) => (
+                                <div key={idx} style={{
+                                    width: '8%',
+                                    height: `${h}%`,
+                                    background: idx % 2 === 0 ? '#6e6ce6' : '#d64374',
+                                    borderRadius: '5px'
+                                }}></div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
             </div>
 
         </div>

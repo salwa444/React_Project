@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import './Admin.css';
 
 const AdminLayout = () => {
     const location = useLocation();
     const navigate = useNavigate();
+    const [searchTerm, setSearchTerm] = useState('');
 
     // Menu updated to match "Premium" feel icons
     const menuItems = [
@@ -58,35 +59,33 @@ const AdminLayout = () => {
             <main className="admin-main">
                 {/* Topbar */}
                 <header className="topbar">
-                    <div className="search-bar">
+                    <div className="search-wrapper">
                         <i className="bi bi-search search-icon"></i>
-                        <input type="text" className="search-input" placeholder="Rechercher..." />
+                        <input
+                            type="text"
+                            className="search-input"
+                            placeholder="Rechercher..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
                     </div>
-
-                    <div className="user-profile">
-                        <button className="icon-btn">
+                    <div className="user-profile d-flex align-items-center gap-3">
+                        <button className="icon-btn position-relative me-2">
                             <i className="bi bi-bell"></i>
-                            <span className="badge-dot"></span>
+                            <span className="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle" style={{ width: '10px', height: '10px' }}></span>
                         </button>
-                        <button className="icon-btn">
-                            <i className="bi bi-gear"></i>
-                        </button>
-                        <div className="d-flex align-items-center ms-2">
-                            <img
-                                src={`https://ui-avatars.com/api/?name=${localStorage.getItem('username') || 'Admin'}&background=2563eb&color=fff`}
-                                alt="Admin"
-                                className="avatar me-2"
-                            />
-                            <div className="d-none d-md-block">
-                                <div className="fw-bold text-dark small">{localStorage.getItem('username') || 'Admin'}</div>
-                                <div className="text-muted small" style={{ fontSize: '0.75rem' }}>Administrateur</div>
-                            </div>
+                        <div className="text-end d-none d-sm-block">
+                            <span className="d-block fw-bold text-white small">{localStorage.getItem('username') || 'Admin'}</span>
+                            <span className="d-block text-white-50 very-small" style={{ fontSize: '0.75rem' }}>Administrateur</span>
+                        </div>
+                        <div className="avatar-circle">
+                            <i className="bi bi-person-fill"></i>
                         </div>
                     </div>
                 </header>
 
                 {/* Page Content */}
-                <Outlet />
+                <Outlet context={{ searchTerm }} />
             </main>
         </div>
     );

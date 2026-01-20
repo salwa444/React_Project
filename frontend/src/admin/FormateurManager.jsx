@@ -1,11 +1,14 @@
 
 import React, { useState, useEffect } from 'react';
 import axiosInstance from '../api/axiosConfig';
+import { useOutletContext } from 'react-router-dom';
 
 const FormateurManager = () => {
     const [formateurs, setFormateurs] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
+    const { searchTerm } = useOutletContext(); // Get search term
+
     const [currentFormateur, setCurrentFormateur] = useState({
         nom: '',
         email: '',
@@ -71,12 +74,20 @@ const FormateurManager = () => {
         }
     };
 
+    // Filter logic
+    const filteredFormateurs = formateurs.filter(f =>
+        f.nom.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        f.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        f.telephone?.includes(searchTerm) ||
+        f.motsCles?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
     if (loading) return <div className="text-center mt-5"><div className="spinner-border text-primary"></div></div>;
 
     return (
-        <div className="card border-0 shadow-sm p-4">
+        <div className="dubank-card">
             <div className="d-flex justify-content-between align-items-center mb-4">
-                <h3 className="fw-bold mb-0">Gestion des Formateurs</h3>
+                <h3 className="card-title text-white mb-0" style={{ fontSize: '1.25rem' }}>Gestion des Formateurs</h3>
                 <button className="btn btn-primary" onClick={() => openModal()}>
                     <i className="bi bi-person-plus me-2"></i>Ajouter un formateur
                 </button>
@@ -84,7 +95,7 @@ const FormateurManager = () => {
 
             <div className="table-responsive">
                 <table className="table table-hover align-middle">
-                    <thead className="table-light">
+                    <thead>
                         <tr>
                             <th>Nom</th>
                             <th>Email</th>
@@ -95,7 +106,7 @@ const FormateurManager = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {formateurs.map((f) => (
+                        {filteredFormateurs.map((f) => (
                             <tr key={f.id}>
                                 <td className="fw-bold">{f.nom}</td>
                                 <td>{f.email}</td>
@@ -103,13 +114,14 @@ const FormateurManager = () => {
                                 <td>{f.motsCles}</td>
                                 <td>
                                     <select
-                                        className={`form-select form-select-sm w-auto ${f.statut === 'ACTIF' ? 'text-success border-success' : f.statut === 'EN_ATTENTE' ? 'text-warning border-warning' : 'text-danger border-danger'}`}
+                                        className={`form-select form-select-sm w-auto bg-transparent border-0 ${f.statut === 'ACTIF' ? 'text-success' : f.statut === 'EN_ATTENTE' ? 'text-warning' : 'text-danger'}`}
                                         value={f.statut}
                                         onChange={(e) => handleStatusChange(f, e.target.value)}
+                                        style={{ boxShadow: 'none' }}
                                     >
-                                        <option value="ACTIF">ACTIF</option>
-                                        <option value="EN_ATTENTE">EN ATTENTE</option>
-                                        <option value="INACTIF">INACTIF</option>
+                                        <option value="ACTIF" className="bg-dark text-success">ACTIF</option>
+                                        <option value="EN_ATTENTE" className="bg-dark text-warning">EN ATTENTE</option>
+                                        <option value="INACTIF" className="bg-dark text-danger">INACTIF</option>
                                     </select>
                                 </td>
                                 <td className="text-center">
@@ -122,6 +134,13 @@ const FormateurManager = () => {
                                 </td>
                             </tr>
                         ))}
+                        {filteredFormateurs.length === 0 && (
+                            <tr>
+                                <td colSpan="6" className="text-center text-muted py-4">
+                                    Aucun formateur trouvé pour "{searchTerm}"
+                                </td>
+                            </tr>
+                        )}
                     </tbody>
                 </table>
             </div>
@@ -129,13 +148,13 @@ const FormateurManager = () => {
             {showModal && (
                 <div className="modal show d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
                     <div className="modal-dialog modal-md">
-                        <div className="modal-content border-0 shadow">
-                            <div className="modal-header bg-primary text-white">
+                        <div className="modal-content shadow">
+                            <div className="modal-header bg-dark text-white border-bottom border-secondary">
                                 <h5 className="modal-title">{currentFormateur.id ? 'Modifier' : 'Ajouter'} un formateur</h5>
                                 <button type="button" className="btn-close btn-close-white" onClick={() => setShowModal(false)}></button>
                             </div>
                             <form onSubmit={handleSave}>
-                                <div className="modal-body p-4">
+                                <div className="modal-body p-4 bg-dark text-white">
                                     <div className="row g-3">
                                         <div className="col-12">
                                             <label className="form-label">Nom complet</label>
@@ -163,8 +182,8 @@ const FormateurManager = () => {
                                         </div>
                                     </div>
                                 </div>
-                                <div className="modal-footer border-0">
-                                    <button type="button" className="btn btn-light" onClick={() => setShowModal(false)}>Annuler</button>
+                                <div className="modal-footer border-top border-secondary bg-dark">
+                                    <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>Annuler</button>
                                     <button type="submit" className="btn btn-primary px-4">Enregistrer</button>
                                 </div>
                             </form>
@@ -175,5 +194,4 @@ const FormateurManager = () => {
         </div>
     );
 };
-
 export default FormateurManager;

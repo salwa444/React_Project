@@ -6,6 +6,7 @@ import Home from './pages/Home';
 import ParticipantForm from './pages/ParticipantForm';
 import TrainerForm from './pages/TrainerForm';
 import Login from './auth/Login';
+import ForgotPassword from './auth/ForgotPassword';
 import AdminLayout from './admin/AdminLayout';
 import AdminDashboard from './admin/AdminDashboard';
 import AssistantLayout from './assistant/AssistantLayout';
@@ -26,14 +27,14 @@ import './App.css';
 
 // Public Layout to keep Navbar/Footer on site pages but NOT on admin pages
 const PublicLayout = () => (
-  <div className="app-container d-flex flex-column min-vh-100">
+  <div className="app-container visitor-wrapper d-flex flex-column min-vh-100">
     <Navbar />
     <main className="main-content flex-grow-1">
       <Outlet />
     </main>
-    <footer className="bg-dark text-white text-center py-4 mt-auto">
+    <footer className="text-center py-4 mt-auto" style={{ background: 'white', color: '#6e7090' }}>
       <div className="container">
-        <p className="mb-0">&copy; 2026 Centre de Formation. Tous droits réservés.</p>
+        <p className="mb-0">&copy; 2026 Centre de Formation. Explorez votre avenir.</p>
       </div>
     </footer>
   </div>
@@ -47,6 +48,7 @@ function App() {
         <Route element={<PublicLayout />}>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/inscription/:formationId" element={<ParticipantForm />} />
           <Route path="/register-formateur" element={<TrainerForm />} />
         </Route>

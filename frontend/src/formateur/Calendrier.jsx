@@ -3,8 +3,6 @@ import FormateurService from '../api/FormateurService';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap-icons/font/bootstrap-icons.css';
 
 const Calendrier = () => {
     const [events, setEvents] = useState([]);
@@ -76,7 +74,7 @@ const Calendrier = () => {
         <div className="container-fluid">
             <div className="row mb-4">
                 <div className="col-12">
-                    <h2 className="fw-bold mb-0">
+                    <h2 className="fw-bold mb-0 text-white">
                         <i className="bi bi-calendar-week me-2 text-primary"></i>
                         Calendrier des Formations
                     </h2>
@@ -84,8 +82,9 @@ const Calendrier = () => {
                 </div>
             </div>
 
-            <div className="card border-0 shadow-sm">
-                <div className="card-body p-4">
+            <div className="dubank-card">
+                <div className="card-body p-4 bg-light rounded text-dark">
+                    {/* FullCalendar is complex to style fully dark, so keeping card body light for contrast/readability for now, wrapped in dubank-card structure */}
                     <FullCalendar
                         plugins={[dayGridPlugin, interactionPlugin]}
                         initialView="dayGridMonth"
@@ -113,8 +112,8 @@ const Calendrier = () => {
             {showModal && selectedEvent && (
                 <div className="modal show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
                     <div className="modal-dialog modal-dialog-centered">
-                        <div className="modal-content border-0 shadow">
-                            <div className="modal-header bg-primary text-white">
+                        <div className="modal-content border-0 shadow bg-dark text-white">
+                            <div className="modal-header bg-dark border-bottom border-secondary text-white">
                                 <h5 className="modal-title">
                                     <i className="bi bi-info-circle me-2"></i>
                                     Détails de la Formation
@@ -134,7 +133,7 @@ const Calendrier = () => {
                                     <p className="fw-bold fs-5 mb-0">{selectedEvent.title}</p>
                                 </div>
 
-                                <hr />
+                                <hr className="border-secondary" />
 
                                 <div className="mb-3">
                                     <h6 className="text-muted mb-2">
@@ -149,7 +148,7 @@ const Calendrier = () => {
                                     </p>
                                 </div>
 
-                                <hr />
+                                <hr className="border-secondary" />
 
                                 <div className="mb-3">
                                     <h6 className="text-muted mb-2">
@@ -161,7 +160,7 @@ const Calendrier = () => {
                                     </span>
                                 </div>
 
-                                <hr />
+                                <hr className="border-secondary" />
 
                                 <div className="mb-3">
                                     <h6 className="text-muted mb-2">
@@ -173,7 +172,7 @@ const Calendrier = () => {
                                     </span>
                                 </div>
 
-                                <hr />
+                                <hr className="border-secondary" />
 
                                 <div className="mb-0">
                                     <h6 className="text-muted mb-2">
@@ -183,7 +182,7 @@ const Calendrier = () => {
                                     <p className="mb-0">{selectedEvent.lieu}</p>
                                 </div>
                             </div>
-                            <div className="modal-footer">
+                            <div className="modal-footer border-top border-secondary bg-dark">
                                 <button
                                     type="button"
                                     className="btn btn-secondary"

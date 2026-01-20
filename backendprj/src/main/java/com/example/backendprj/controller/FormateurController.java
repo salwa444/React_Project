@@ -28,14 +28,20 @@ public class FormateurController {
     }
 
     @PostMapping("/register")
-    public Formateur registerFormateur(@RequestBody Map<String, String> payload) {
+    public ResponseEntity<?> registerFormateur(@RequestBody Map<String, String> payload) {
+        String email = payload.get("email");
+        if (formateurRepository.findByEmail(email).isPresent()) {
+            return ResponseEntity.badRequest().body("Cet email est déjà enregistré comme formateur.");
+        }
+
         Formateur f = new Formateur();
         f.setNom(payload.get("nomComplet"));
-        f.setEmail(payload.get("email"));
+        f.setEmail(email);
         f.setMotsCles(payload.get("competences"));
         f.setRemarques(payload.get("remarques"));
-        f.setStatut("EN_ATTENTE");
-        return formateurRepository.save(f);
+        f.setStatut("EN_ATTENTE"); // Default status
+        
+        return ResponseEntity.ok(formateurRepository.save(f));
     }
 
     @GetMapping("/{id}")

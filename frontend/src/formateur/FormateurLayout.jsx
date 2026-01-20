@@ -11,6 +11,8 @@ const FormateurLayout = () => {
     const navigate = useNavigate();
     const [userName, setUserName] = useState('Formateur');
 
+    const [searchTerm, setSearchTerm] = useState('');
+
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);
     };
@@ -87,9 +89,15 @@ const FormateurLayout = () => {
             <main className="admin-main">
                 {/* Topbar */}
                 <header className="topbar">
-                    <div className="search-bar">
-                        <i className="bi bi-search search-icon"></i>
-                        <input type="text" className="search-input" placeholder="Rechercher une formation..." />
+                    <div className="search-wrapper">
+                        <input
+                            type="text"
+                            className="search-input"
+                            placeholder="Rechercher une formation..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            style={{ paddingLeft: '20px' }}
+                        />
                     </div>
 
                     <div className="user-profile">
@@ -104,7 +112,7 @@ const FormateurLayout = () => {
                                 className="avatar me-2"
                             />
                             <div className="d-none d-md-block">
-                                <div className="fw-bold text-dark small">{userName}</div>
+                                <div className="fw-bold text-white small">{userName}</div>
                                 <div className="text-muted small" style={{ fontSize: '0.75rem' }}>Formateur</div>
                             </div>
                         </div>
@@ -112,7 +120,7 @@ const FormateurLayout = () => {
                 </header>
 
                 {/* Page Content */}
-                <Outlet />
+                <Outlet context={{ searchTerm }} />
             </main>
         </div>
     );

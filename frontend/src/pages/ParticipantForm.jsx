@@ -92,143 +92,153 @@ const ParticipantForm = () => {
     };
 
     return (
-        <div className="container py-5">
-            <div className="row justify-content-center">
-                <div className="col-lg-6">
-                    <div className="card shadow-lg border-0 overflow-hidden">
-                        <div className="card-header bg-primary text-white py-3 text-center">
-                            <h3 className="mb-0 fs-4 fw-bold">
-                                <i className="bi bi-person-check-fill me-2"></i>
-                                Inscription Participant
-                            </h3>
-                        </div>
-                        <div className="card-body p-4">
-                            {message && (
-                                <div className={`alert alert-${message.type} shadow-sm border-0 fade show`} role="alert">
-                                    {message.text}
-                                </div>
-                            )}
+        <div className="visitor-wrapper"> {/* Use visitor-wrapper for global gradient if not already on body */}
+            <div className="container py-5">
+                <div className="row justify-content-center">
+                    <div className="col-lg-6">
+                        <div className="card shadow-lg border-0 overflow-hidden" style={{ background: '#222240', color: 'white' }}>
+                            <div className="card-header py-3 text-center" style={{ background: 'linear-gradient(90deg, #d64374 0%, #6e6ce6 100%)', border: 'none' }}>
+                                <h3 className="mb-0 fs-4 fw-bold text-white">
+                                    <i className="bi bi-person-check-fill me-2"></i>
+                                    Inscription Participant
+                                </h3>
+                            </div>
+                            <div className="card-body p-4">
+                                {message && (
+                                    <div className={`alert alert-${message.type} shadow-sm border-0 fade show`} role="alert">
+                                        {message.text}
+                                    </div>
+                                )}
 
-                            <form onSubmit={handleSubmit}>
-                                <div className="row g-3">
-                                    <div className="col-md-6">
-                                        <label className="form-label fw-bold small text-muted text-uppercase">Nom</label>
-                                        <input
-                                            type="text"
-                                            name="nom"
-                                            className="form-control rounded-pill border-0 shadow-sm bg-light"
-                                            placeholder="Votre nom"
-                                            required
-                                            value={formData.nom}
-                                            onChange={handleChange}
-                                        />
-                                    </div>
-                                    <div className="col-md-6">
-                                        <label className="form-label fw-bold small text-muted text-uppercase">Prénom</label>
-                                        <input
-                                            type="text"
-                                            name="prenom"
-                                            className="form-control rounded-pill border-0 shadow-sm bg-light"
-                                            placeholder="Votre prénom"
-                                            required
-                                            value={formData.prenom}
-                                            onChange={handleChange}
-                                        />
-                                    </div>
+                                <form onSubmit={handleSubmit}>
+                                    <div className="row g-3">
+                                        <div className="col-md-6">
+                                            <label className="form-label fw-bold small text-muted text-uppercase">Nom</label>
+                                            <input
+                                                type="text"
+                                                name="nom"
+                                                className="form-control rounded-pill border-0 shadow-sm"
+                                                style={{ background: '#1e1e36', color: 'white' }}
+                                                placeholder="Votre nom"
+                                                required
+                                                value={formData.nom}
+                                                onChange={handleChange}
+                                            />
+                                        </div>
+                                        <div className="col-md-6">
+                                            <label className="form-label fw-bold small text-muted text-uppercase">Prénom</label>
+                                            <input
+                                                type="text"
+                                                name="prenom"
+                                                className="form-control rounded-pill border-0 shadow-sm"
+                                                style={{ background: '#1e1e36', color: 'white' }}
+                                                placeholder="Votre prénom"
+                                                required
+                                                value={formData.prenom}
+                                                onChange={handleChange}
+                                            />
+                                        </div>
 
-                                    <div className="col-12">
-                                        <label className="form-label fw-bold small text-muted text-uppercase">Date de naissance</label>
-                                        <input
-                                            type="date"
-                                            name="dateNaissance"
-                                            className="form-control rounded-pill border-0 shadow-sm bg-light"
-                                            required
-                                            value={formData.dateNaissance}
-                                            onChange={handleChange}
-                                        />
-                                    </div>
+                                        <div className="col-12">
+                                            <label className="form-label fw-bold small text-muted text-uppercase">Date de naissance</label>
+                                            <input
+                                                type="date"
+                                                name="dateNaissance"
+                                                className="form-control rounded-pill border-0 shadow-sm"
+                                                style={{ background: '#1e1e36', color: 'white' }}
+                                                required
+                                                value={formData.dateNaissance}
+                                                onChange={handleChange}
+                                            />
+                                        </div>
 
-                                    <div className="col-12">
-                                        <label className="form-label fw-bold small text-muted text-uppercase">Ville</label>
-                                        <input
-                                            type="text"
-                                            name="ville"
-                                            className="form-control rounded-pill border-0 shadow-sm bg-light"
-                                            placeholder="Votre ville de résidence"
-                                            required
-                                            value={formData.ville}
-                                            onChange={handleChange}
-                                        />
-                                    </div>
+                                        <div className="col-12">
+                                            <label className="form-label fw-bold small text-muted text-uppercase">Ville</label>
+                                            <input
+                                                type="text"
+                                                name="ville"
+                                                className="form-control rounded-pill border-0 shadow-sm"
+                                                style={{ background: '#1e1e36', color: 'white' }}
+                                                placeholder="Votre ville de résidence"
+                                                required
+                                                value={formData.ville}
+                                                onChange={handleChange}
+                                            />
+                                        </div>
 
-                                    <div className="col-12">
-                                        <label className="form-label fw-bold small text-muted text-uppercase">Email</label>
-                                        <input
-                                            type="email"
-                                            name="email"
-                                            className="form-control rounded-pill border-0 shadow-sm bg-light"
-                                            placeholder="exemple@email.com"
-                                            required
-                                            value={formData.email}
-                                            onChange={handleChange}
-                                        />
-                                    </div>
+                                        <div className="col-12">
+                                            <label className="form-label fw-bold small text-muted text-uppercase">Email</label>
+                                            <input
+                                                type="email"
+                                                name="email"
+                                                className="form-control rounded-pill border-0 shadow-sm"
+                                                style={{ background: '#1e1e36', color: 'white' }}
+                                                placeholder="exemple@email.com"
+                                                required
+                                                value={formData.email}
+                                                onChange={handleChange}
+                                            />
+                                        </div>
 
-                                    <div className="col-12">
-                                        <label className="form-label fw-bold small text-muted text-uppercase">Téléphone</label>
-                                        <input
-                                            type="tel"
-                                            name="telephone"
-                                            className="form-control rounded-pill border-0 shadow-sm bg-light"
-                                            placeholder="Votre numéro de téléphone"
-                                            required
-                                            value={formData.telephone}
-                                            onChange={handleChange}
-                                        />
-                                    </div>
+                                        <div className="col-12">
+                                            <label className="form-label fw-bold small text-muted text-uppercase">Téléphone</label>
+                                            <input
+                                                type="tel"
+                                                name="telephone"
+                                                className="form-control rounded-pill border-0 shadow-sm"
+                                                style={{ background: '#1e1e36', color: 'white' }}
+                                                placeholder="Votre numéro de téléphone"
+                                                required
+                                                value={formData.telephone}
+                                                onChange={handleChange}
+                                            />
+                                        </div>
 
-                                    <div className="col-12">
-                                        <label className="form-label fw-bold small text-muted text-uppercase">Choisir une formation</label>
-                                        <select
-                                            name="formationId"
-                                            className="form-select rounded-pill border-0 shadow-sm bg-light"
-                                            required
-                                            value={formData.formationId}
-                                            onChange={handleChange}
-                                        >
-                                            <option value="">-- Sélectionnez une formation --</option>
-                                            {formations.map(f => (
-                                                <option key={f.id} value={f.id}>{f.titre} - {f.ville}</option>
-                                            ))}
-                                        </select>
-                                    </div>
+                                        <div className="col-12">
+                                            <label className="form-label fw-bold small text-muted text-uppercase">Choisir une formation</label>
+                                            <select
+                                                name="formationId"
+                                                className="form-select rounded-pill border-0 shadow-sm"
+                                                style={{ background: '#1e1e36', color: 'white', border: 'none' }}
+                                                required
+                                                value={formData.formationId}
+                                                onChange={handleChange}
+                                            >
+                                                <option value="" style={{ color: '#aaa' }}>-- Sélectionnez une formation --</option>
+                                                {formations.map(f => (
+                                                    <option key={f.id} value={f.id} style={{ color: 'white' }}>{f.titre} - {f.ville}</option>
+                                                ))}
+                                            </select>
+                                        </div>
 
-                                    <div className="col-12 mt-4">
-                                        <button
-                                            type="submit"
-                                            className="btn btn-primary w-100 py-3 rounded-pill shadow-sm d-flex align-items-center justify-content-center fw-bold transition-all"
-                                            disabled={loading}
-                                        >
-                                            {loading ? (
-                                                <>
-                                                    <span className="spinner-border spinner-border-sm me-2"></span>
-                                                    Envoi en cours...
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <i className="bi bi-send-fill me-2"></i>
-                                                    Confirmer l'inscription
-                                                </>
-                                            )}
-                                        </button>
+                                        <div className="col-12 mt-4">
+                                            <button
+                                                type="submit"
+                                                className="btn w-100 py-3 rounded-pill shadow-sm d-flex align-items-center justify-content-center fw-bold transition-all"
+                                                style={{ background: '#d64374', color: 'white', border: 'none' }}
+                                                disabled={loading}
+                                            >
+                                                {loading ? (
+                                                    <>
+                                                        <span className="spinner-border spinner-border-sm me-2"></span>
+                                                        Envoi en cours...
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <i className="bi bi-send-fill me-2"></i>
+                                                        Confirmer l'inscription
+                                                    </>
+                                                )}
+                                            </button>
+                                        </div>
                                     </div>
-                                </div>
-                            </form>
-                        </div>
-                        <div className="card-footer bg-light py-3 text-center border-0">
-                            <button onClick={() => navigate('/')} className="btn btn-link btn-sm text-decoration-none text-muted">
-                                <i className="bi bi-arrow-left me-1"></i> Retour à l'accueil
-                            </button>
+                                </form>
+                            </div>
+                            <div className="card-footer py-3 text-center border-0" style={{ background: 'transparent' }}>
+                                <button onClick={() => navigate('/')} className="btn btn-link btn-sm text-decoration-none text-muted">
+                                    <i className="bi bi-arrow-left me-1"></i> Retour à l'accueil
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>

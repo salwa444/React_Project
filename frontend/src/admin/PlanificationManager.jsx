@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axiosInstance from '../api/axiosConfig';
+import { useOutletContext } from 'react-router-dom';
 
 const PlanificationManager = () => {
     const [planifications, setPlanifications] = useState([]);
     const [formations, setFormations] = useState([]);
     const [formateurs, setFormateurs] = useState([]);
     const [entreprises, setEntreprises] = useState([]);
+    const { searchTerm } = useOutletContext();
 
     // Form state
     const [formData, setFormData] = useState({
@@ -143,93 +145,106 @@ const PlanificationManager = () => {
         setIsEditing(false);
     };
 
+    const filteredPlanifications = planifications.filter(p =>
+        p.formation?.titre.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        p.formateur?.nom.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        p.entreprise?.nom?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
     return (
-        <div className="card shadow-sm border-0">
-            <div className="card-body">
-                <h3 className="mb-4">Gestion des Planifications</h3>
+        <div className="dubank-card">
+            <div className="d-flex justify-content-between align-items-center mb-4">
+                <h3 className="card-title text-white mb-0" style={{ fontSize: '1.25rem' }}>Gestion des Planifications</h3>
+            </div>
 
-                <form onSubmit={handleSubmit} className="mb-4 p-4 bg-light rounded">
-                    <div className="row g-3">
-                        <div className="col-md-4">
-                            <label className="form-label">Formation</label>
-                            <select className="form-select" onChange={(e) => handleObjectChange(e, formations, 'formation')} value={formData.formation?.id || ''} required>
-                                <option value="">Choisir...</option>
-                                {formations.map(f => <option key={f.id} value={f.id}>{f.titre}</option>)}
-                            </select>
-                        </div>
-                        <div className="col-md-4">
-                            <label className="form-label">Formateur</label>
-                            <select className="form-select" onChange={(e) => handleObjectChange(e, formateurs, 'formateur')} value={formData.formateur?.id || ''}>
-                                <option value="">Choisir...</option>
-                                {formateurs.map(f => <option key={f.id} value={f.id}>{f.nom} {f.prenom}</option>)}
-                            </select>
-                        </div>
-                        <div className="col-md-4">
-                            <label className="form-label">Entreprise (Optionnel)</label>
-                            <select className="form-select" onChange={(e) => handleObjectChange(e, entreprises, 'entreprise')} value={formData.entreprise?.id || ''}>
-                                <option value="">Choisir...</option>
-                                {entreprises.map(e => <option key={e.id} value={e.id}>{e.nom}</option>)}
-                            </select>
-                        </div>
-                        <div className="col-md-3">
-                            <label className="form-label">Date Début</label>
-                            <input type="date" className="form-control" name="dateDebut" value={formData.dateDebut} onChange={handleChange} required />
-                        </div>
-                        <div className="col-md-3">
-                            <label className="form-label">Date Fin</label>
-                            <input type="date" className="form-control" name="dateFin" value={formData.dateFin} onChange={handleChange} required />
-                        </div>
-                        <div className="col-md-3">
-                            <label className="form-label">Type</label>
-                            <select className="form-select" name="type" value={formData.type} onChange={handleChange}>
-                                <option value="ENTREPRISE">Entreprise</option>
-                                <option value="INDIVIDUEL">Individuel</option>
-                            </select>
-                        </div>
-                        <div className="col-md-12">
-                            <label className="form-label">Remarques</label>
-                            <textarea className="form-control" name="remarques" value={formData.remarques} onChange={handleChange}></textarea>
-                        </div>
+            <form onSubmit={handleSubmit} className="mb-4 p-4 rounded" style={{ backgroundColor: 'rgba(255, 255, 255, 0.05)' }}>
+                <div className="row g-3">
+                    <div className="col-md-4">
+                        <label className="form-label">Formation</label>
+                        <select className="form-select" onChange={(e) => handleObjectChange(e, formations, 'formation')} value={formData.formation?.id || ''} required>
+                            <option value="">Choisir...</option>
+                            {formations.map(f => <option key={f.id} value={f.id}>{f.titre}</option>)}
+                        </select>
                     </div>
-                    <div className="mt-3">
-                        <button type="submit" className={`btn btn-${isEditing ? 'warning' : 'primary'} me-2`}>
-                            {isEditing ? 'Modifier' : 'Ajouter'}
-                        </button>
-                        {isEditing && <button type="button" className="btn btn-secondary" onClick={resetForm}>Annuler</button>}
+                    <div className="col-md-4">
+                        <label className="form-label">Formateur</label>
+                        <select className="form-select" onChange={(e) => handleObjectChange(e, formateurs, 'formateur')} value={formData.formateur?.id || ''}>
+                            <option value="">Choisir...</option>
+                            {formateurs.map(f => <option key={f.id} value={f.id}>{f.nom} {f.prenom}</option>)}
+                        </select>
                     </div>
-                </form>
-
-                <div className="table-responsive">
-                    <table className="table table-hover align-middle">
-                        <thead className="table-light">
-                            <tr>
-                                <th>Formation</th>
-                                <th>Dates</th>
-                                <th>Formateur</th>
-                                <th>Type</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {planifications.map(plan => (
-                                <tr key={plan.id}>
-                                    <td>{plan.formation?.titre}</td>
-                                    <td>{plan.dateDebut} au {plan.dateFin}</td>
-                                    <td>{plan.formateur ? `${plan.formateur.nom} ${plan.formateur.prenom}` : '-'}</td>
-                                    <td><span className="badge bg-info text-dark">{plan.type}</span></td>
-                                    <td>
-                                        <button className="btn btn-sm btn-outline-warning me-2" onClick={() => handleEdit(plan)}>
-                                            <i className="bi bi-pencil"></i>
-                                        </button>
-                                        <button className="btn btn-sm btn-outline-danger" onClick={() => handleDelete(plan.id)}>
-                                            <i className="bi bi-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                    <div className="col-md-4">
+                        <label className="form-label">Entreprise (Optionnel)</label>
+                        <select className="form-select" onChange={(e) => handleObjectChange(e, entreprises, 'entreprise')} value={formData.entreprise?.id || ''}>
+                            <option value="">Choisir...</option>
+                            {entreprises.map(e => <option key={e.id} value={e.id}>{e.nom}</option>)}
+                        </select>
+                    </div>
+                    <div className="col-md-3">
+                        <label className="form-label">Date Début</label>
+                        <input type="date" className="form-control" name="dateDebut" value={formData.dateDebut} onChange={handleChange} required />
+                    </div>
+                    <div className="col-md-3">
+                        <label className="form-label">Date Fin</label>
+                        <input type="date" className="form-control" name="dateFin" value={formData.dateFin} onChange={handleChange} required />
+                    </div>
+                    <div className="col-md-3">
+                        <label className="form-label">Type</label>
+                        <select className="form-select" name="type" value={formData.type} onChange={handleChange}>
+                            <option value="ENTREPRISE">Entreprise</option>
+                            <option value="INDIVIDUEL">Individuel</option>
+                        </select>
+                    </div>
+                    <div className="col-md-12">
+                        <label className="form-label">Remarques</label>
+                        <textarea className="form-control" name="remarques" value={formData.remarques} onChange={handleChange}></textarea>
+                    </div>
                 </div>
+                <div className="mt-3">
+                    <button type="submit" className={`btn btn-${isEditing ? 'warning' : 'primary'} me-2`}>
+                        {isEditing ? 'Modifier' : 'Ajouter'}
+                    </button>
+                    {isEditing && <button type="button" className="btn btn-secondary" onClick={resetForm}>Annuler</button>}
+                </div>
+            </form>
+
+            <div className="table-responsive">
+                <table className="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th>Formation</th>
+                            <th>Dates</th>
+                            <th>Formateur</th>
+                            <th>Type</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {filteredPlanifications.map(plan => (
+                            <tr key={plan.id}>
+                                <td>{plan.formation?.titre}</td>
+                                <td>{plan.dateDebut} au {plan.dateFin}</td>
+                                <td>{plan.formateur ? `${plan.formateur.nom} ${plan.formateur.prenom}` : '-'}</td>
+                                <td><span className="badge bg-info text-dark">{plan.type}</span></td>
+                                <td>
+                                    <button className="btn btn-sm btn-outline-warning me-2" onClick={() => handleEdit(plan)}>
+                                        <i className="bi bi-pencil"></i>
+                                    </button>
+                                    <button className="btn btn-sm btn-outline-danger" onClick={() => handleDelete(plan.id)}>
+                                        <i className="bi bi-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        ))}
+                        {filteredPlanifications.length === 0 && (
+                            <tr>
+                                <td colSpan="5" className="text-center text-muted py-4">
+                                    Aucune planification trouvée pour "{searchTerm}"
+                                </td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
             </div>
         </div>
     );

@@ -1,11 +1,16 @@
 
 import React, { useState, useEffect } from 'react';
 import axiosInstance from '../api/axiosConfig';
+import { useOutletContext } from 'react-router-dom';
 
 const FormationManager = () => {
     const [formations, setFormations] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
+
+    // Get searchTerm from AdminLayout context
+    const { searchTerm } = useOutletContext();
+
     const [currentFormation, setCurrentFormation] = useState({
         titre: '',
         categorie: '',
@@ -65,12 +70,19 @@ const FormationManager = () => {
         setShowModal(true);
     };
 
+    // Filter logic
+    const filteredFormations = formations.filter(f =>
+        f.titre.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        f.categorie?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        f.ville?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
     if (loading) return <div className="text-center mt-5"><div className="spinner-border text-primary"></div></div>;
 
     return (
-        <div className="card border-0 shadow-sm p-4">
+        <div className="dubank-card">
             <div className="d-flex justify-content-between align-items-center mb-4">
-                <h3 className="fw-bold mb-0">Gestion des Formations</h3>
+                <h3 className="card-title text-white mb-0" style={{ fontSize: '1.25rem' }}>Gestion des Formations</h3>
                 <button className="btn btn-primary" onClick={() => openModal()}>
                     <i className="bi bi-plus-lg me-2"></i>Ajouter une formation
                 </button>
@@ -78,7 +90,7 @@ const FormationManager = () => {
 
             <div className="table-responsive">
                 <table className="table table-hover align-middle">
-                    <thead className="table-light">
+                    <thead>
                         <tr>
                             <th>Titre</th>
                             <th>Catégorie</th>
@@ -90,7 +102,7 @@ const FormationManager = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {formations.map((f) => (
+                        {filteredFormations.map((f) => (
                             <tr key={f.id}>
                                 <td className="fw-bold">{f.titre}</td>
                                 <td><span className="badge bg-info text-dark">{f.categorie}</span></td>
@@ -112,6 +124,13 @@ const FormationManager = () => {
                                 </td>
                             </tr>
                         ))}
+                        {filteredFormations.length === 0 && (
+                            <tr>
+                                <td colSpan="7" className="text-center text-muted py-4">
+                                    Aucune formation trouvée pour "{searchTerm}"
+                                </td>
+                            </tr>
+                        )}
                     </tbody>
                 </table>
             </div>
@@ -120,13 +139,13 @@ const FormationManager = () => {
             {showModal && (
                 <div className="modal show d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
                     <div className="modal-dialog modal-lg">
-                        <div className="modal-content border-0 shadow">
-                            <div className="modal-header bg-primary text-white">
+                        <div className="modal-content shadow">
+                            <div className="modal-header bg-dark text-white border-bottom border-secondary">
                                 <h5 className="modal-title">{currentFormation.id ? 'Modifier' : 'Ajouter'} une formation</h5>
                                 <button type="button" className="btn-close btn-close-white" onClick={() => setShowModal(false)}></button>
                             </div>
                             <form onSubmit={handleSave}>
-                                <div className="modal-body p-4">
+                                <div className="modal-body p-4 bg-dark text-white">
                                     <div className="row g-3">
                                         <div className="col-md-8">
                                             <label className="form-label">Titre</label>
@@ -164,8 +183,8 @@ const FormationManager = () => {
                                         </div>
                                     </div>
                                 </div>
-                                <div className="modal-footer border-0">
-                                    <button type="button" className="btn btn-light" onClick={() => setShowModal(false)}>Annuler</button>
+                                <div className="modal-footer border-top border-secondary bg-dark">
+                                    <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>Annuler</button>
                                     <button type="submit" className="btn btn-primary px-4">Enregistrer</button>
                                 </div>
                             </form>
@@ -176,5 +195,4 @@ const FormationManager = () => {
         </div>
     );
 };
-
 export default FormationManager;

@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import FormateurService from '../api/FormateurService';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap-icons/font/bootstrap-icons.css';
 
 const Profil = () => {
     const [profile, setProfile] = useState({
@@ -173,7 +171,7 @@ const Profil = () => {
             <div className="row g-4">
                 {/* SECTION 1 - Informations personnelles */}
                 <div className="col-12 col-lg-6">
-                    <div className="card border-0 shadow-sm h-100">
+                    <div className="dubank-card h-100">
                         <div className="card-body p-4">
                             <div className="d-flex align-items-center mb-4">
                                 <div className="rounded-circle d-flex align-items-center justify-content-center me-3"
@@ -186,7 +184,7 @@ const Profil = () => {
                                     <i className="bi bi-person-fill fs-4"></i>
                                 </div>
                                 <div>
-                                    <h5 className="fw-bold mb-0">Informations Personnelles</h5>
+                                    <h5 className="fw-bold mb-0 text-white">Informations Personnelles</h5>
                                     <small className="text-muted">Gérez vos informations de base</small>
                                 </div>
                             </div>
@@ -197,12 +195,12 @@ const Profil = () => {
                                         Nom complet
                                     </label>
                                     <div className="input-group">
-                                        <span className="input-group-text bg-light border-end-0">
-                                            <i className="bi bi-person text-muted"></i>
+                                        <span className="input-group-text bg-dark border-secondary text-muted">
+                                            <i className="bi bi-person"></i>
                                         </span>
                                         <input
                                             type="text"
-                                            className="form-control border-start-0 bg-light"
+                                            className="form-control bg-dark border-secondary text-white"
                                             name="nom"
                                             value={profile.nom}
                                             onChange={handleChange}
@@ -217,12 +215,12 @@ const Profil = () => {
                                         Adresse email
                                     </label>
                                     <div className="input-group">
-                                        <span className="input-group-text bg-light border-end-0">
-                                            <i className="bi bi-envelope text-muted"></i>
+                                        <span className="input-group-text bg-dark border-secondary text-muted">
+                                            <i className="bi bi-envelope"></i>
                                         </span>
                                         <input
                                             type="email"
-                                            className="form-control border-start-0 bg-light"
+                                            className="form-control bg-dark border-secondary text-white"
                                             name="email"
                                             value={profile.email}
                                             onChange={handleChange}
@@ -232,7 +230,7 @@ const Profil = () => {
                                     </div>
                                 </div>
 
-                                <div className="d-flex align-items-center p-3 rounded" style={{ backgroundColor: '#f8f9fa' }}>
+                                <div className="d-flex align-items-center p-3 rounded" style={{ backgroundColor: 'rgba(255,255,255,0.05)' }}>
                                     <i className="bi bi-info-circle text-primary me-3 fs-4"></i>
                                     <small className="text-muted">
                                         Ces informations sont visibles par les administrateurs et les entreprises clientes.
@@ -245,7 +243,7 @@ const Profil = () => {
 
                 {/* SECTION 2 - Compétences */}
                 <div className="col-12 col-lg-6">
-                    <div className="card border-0 shadow-sm h-100">
+                    <div className="dubank-card h-100">
                         <div className="card-body p-4">
                             <div className="d-flex align-items-center mb-4">
                                 <div className="rounded-circle d-flex align-items-center justify-content-center me-3"
@@ -258,7 +256,7 @@ const Profil = () => {
                                     <i className="bi bi-lightbulb-fill fs-4"></i>
                                 </div>
                                 <div>
-                                    <h5 className="fw-bold mb-0">Compétences & Expertises</h5>
+                                    <h5 className="fw-bold mb-0 text-white">Compétences & Expertises</h5>
                                     <small className="text-muted">Vos domaines de spécialisation</small>
                                 </div>
                             </div>
@@ -304,7 +302,7 @@ const Profil = () => {
                                         Mots-clés (séparés par des virgules)
                                     </label>
                                     <textarea
-                                        className="form-control bg-light"
+                                        className="form-control bg-dark border-secondary text-white"
                                         rows="4"
                                         name="competences"
                                         value={profile.competences}
@@ -324,7 +322,7 @@ const Profil = () => {
 
                 {/* SECTION 3 - Remarques & Biographie */}
                 <div className="col-12">
-                    <div className="card border-0 shadow-sm">
+                    <div className="dubank-card">
                         <div className="card-body p-4">
                             <div className="d-flex align-items-center mb-4">
                                 <div className="rounded-circle d-flex align-items-center justify-content-center me-3"
@@ -337,13 +335,13 @@ const Profil = () => {
                                     <i className="bi bi-chat-left-text-fill fs-4"></i>
                                 </div>
                                 <div>
-                                    <h5 className="fw-bold mb-0">Biographie & Remarques</h5>
+                                    <h5 className="fw-bold mb-0 text-white">Biographie & Remarques</h5>
                                     <small className="text-muted">Présentez-vous et partagez votre expérience</small>
                                 </div>
                             </div>
 
                             <textarea
-                                className="form-control bg-light border-0"
+                                className="form-control border-secondary text-white"
                                 rows="6"
                                 name="remarques"
                                 value={profile.remarques}
@@ -353,7 +351,8 @@ const Profil = () => {
                                 style={{
                                     fontSize: '1rem',
                                     lineHeight: '1.6',
-                                    resize: 'none'
+                                    resize: 'none',
+                                    backgroundColor: 'rgba(0,0,0,0.2)'
                                 }}
                             ></textarea>
 
@@ -361,7 +360,7 @@ const Profil = () => {
                                 <div className="d-flex justify-content-end gap-2 mt-4">
                                     <button
                                         type="button"
-                                        className="btn btn-outline-secondary px-4"
+                                        className="btn btn-outline-light px-4"
                                         onClick={() => {
                                             setIsEditing(false);
                                             fetchProfile();
